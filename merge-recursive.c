@@ -772,7 +772,7 @@ static void update_file_flags(struct merge_options *o,
 			goto update_index;
 		}
 		if (S_ISREG(mode) || (!has_symlinks && S_ISLNK(mode))) {
-			int fd;
+			int fd, smudge_to_file;
 			int isreg = S_ISREG(mode);
 			if (mode & 0100)
 				mode = 0777;
@@ -782,7 +782,7 @@ static void update_file_flags(struct merge_options *o,
 			if (fd < 0)
 				die_errno(_("failed to open '%s'"), path);
 
-			int smudge_to_file = can_smudge_to_file(path);
+			smudge_to_file = can_smudge_to_file(path);
 			if (smudge_to_file) {
 				close(fd);
 				fd = convert_to_working_tree_filter_to_file(path, path, buf, size);
