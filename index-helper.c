@@ -378,7 +378,7 @@ static void request_kill(void)
 	return;
 }
 
-int main(int argc, char **argv)
+int cmd_main(int argc, const char **argv)
 {
 	const char *prefix;
 	int idle_in_seconds = 600, detach = 0, kill = 0, autorun = 0;

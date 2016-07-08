@@ -1,7 +1,7 @@
 #include "cache.h"
 #include "ewah/ewok.h"
 
-int main(int argc, char **argv)
+int cmd_main(int argc, const char **argv)
 {
 	do_read_index(&the_index, argv[1], 1);
 	printf("last_update: %s\n", the_index.last_update ?

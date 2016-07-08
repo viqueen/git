@@ -1063,3 +1063,5 @@ struct tm *git_gmtime_r(const time_t *, struct tm *);
 #endif
 
 #endif
+
+extern int cmd_main(int, const char **);
