@@ -24,9 +24,6 @@
 #include "ewah/ewok.h"
 #include "run-command.h"
 
-static struct cache_entry *refresh_cache_entry(struct cache_entry *ce,
-					       unsigned int options);
-
 /* Mask for the name length in ce_flags in the on-disk index */
 
 #define CE_NAMEMASK  (0x0fff)
@@ -1281,7 +1278,7 @@ int refresh_index(struct index_state *istate, unsigned int flags,
 	return has_errors;
 }
 
-static struct cache_entry *refresh_cache_entry(struct cache_entry *ce,
+struct cache_entry *refresh_cache_entry(struct cache_entry *ce,
 					       unsigned int options)
 {
 	return refresh_cache_ent(&the_index, ce, options, NULL, NULL);
