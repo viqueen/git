@@ -21,13 +21,13 @@
 #include "submodule-config.h"
 #include "submodule.h"
 
-static const char * const checkout_usage[] = {
-	N_("git checkout [<options>] <branch>"),
-	N_("git checkout [<options>] [<branch>] -- <file>..."),
+static const char * const czechout_usage[] = {
+	N_("git czechout [<options>] <branch>"),
+	N_("git czechout [<options>] [<branch>] -- <file>..."),
 	NULL,
 };
 
-struct checkout_opts {
+struct czechout_opts {
 	int patch_mode;
 	int quiet;
 	int merge;
@@ -52,10 +52,10 @@ struct checkout_opts {
 	struct tree *source_tree;
 };
 
-static int post_checkout_hook(struct commit *old, struct commit *new,
+static int post_czechout_hook(struct commit *old, struct commit *new,
 			      int changed)
 {
-	return run_hook_le(NULL, "post-checkout",
+	return run_hook_le(NULL, "post-czechout",
 			   sha1_to_hex(old ? old->object.oid.hash : null_sha1),
 			   sha1_to_hex(new ? new->object.oid.hash : null_sha1),
 			   changed ? "1" : "0", NULL);
@@ -85,7 +85,7 @@ static int update_some(const unsigned char *sha1, struct strbuf *base,
 
 	/*
 	 * If the entry is the same as the current index, we can leave the old
-	 * entry in place. Whether it is UPTODATE or not, checkout_entry will
+	 * entry in place. Whether it is UPTODATE or not, czechout_entry will
 	 * do the right thing.
 	 */
 	pos = cache_name_pos(ce->name, ce->ce_namelen);
@@ -154,13 +154,13 @@ static int check_stages(unsigned stages, const struct cache_entry *ce, int pos)
 	return 0;
 }
 
-static int checkout_stage(int stage, struct cache_entry *ce, int pos,
-			  struct checkout *state)
+static int czechout_stage(int stage, struct cache_entry *ce, int pos,
+			  struct czechout *state)
 {
 	while (pos < active_nr &&
 	       !strcmp(active_cache[pos]->name, ce->name)) {
 		if (ce_stage(active_cache[pos]) == stage)
-			return checkout_entry(active_cache[pos], state, NULL);
+			return czechout_entry(active_cache[pos], state, NULL);
 		pos++;
 	}
 	if (stage == 2)
@@ -169,7 +169,7 @@ static int checkout_stage(int stage, struct cache_entry *ce, int pos,
 		return error(_("path '%s' does not have their version"), ce->name);
 }
 
-static int checkout_merged(int pos, struct checkout *state)
+static int czechout_merged(int pos, struct czechout *state)
 {
 	struct cache_entry *ce = active_cache[pos];
 	const char *path = ce->name;
@@ -231,15 +231,15 @@ static int checkout_merged(int pos, struct checkout *state)
 	ce = make_cache_entry(mode, sha1, path, 2, 0);
 	if (!ce)
 		die(_("make_cache_entry failed for path '%s'"), path);
-	status = checkout_entry(ce, state, NULL);
+	status = czechout_entry(ce, state, NULL);
 	return status;
 }
 
-static int checkout_paths(const struct checkout_opts *opts,
+static int czechout_paths(const struct czechout_opts *opts,
 			  const char *revision)
 {
 	int pos;
-	struct checkout state;
+	struct czechout state;
 	static char *ps_matched;
 	unsigned char rev[20];
 	struct commit *head;
@@ -269,7 +269,7 @@ static int checkout_paths(const struct checkout_opts *opts,
 		    opts->new_branch);
 
 	if (opts->patch_mode)
-		return run_add_interactive(revision, "--patch=checkout",
+		return run_add_interactive(revision, "--patch=czechout",
 					   &opts->pathspec);
 
 	lock_file = xcalloc(1, sizeof(struct lock_file));
@@ -294,7 +294,7 @@ static int checkout_paths(const struct checkout_opts *opts,
 			continue;
 		if (opts->source_tree && !(ce->ce_flags & CE_UPDATE))
 			/*
-			 * "git checkout tree-ish -- path", but this entry
+			 * "git czechout tree-ish -- path", but this entry
 			 * is in the original index; it will not be checked
 			 * out to the working tree and it does not matter
 			 * if pathspec matched this entry.  We will not do
@@ -325,7 +325,7 @@ static int checkout_paths(const struct checkout_opts *opts,
 	}
 	free(ps_matched);
 
-	/* "checkout -m path" to recreate conflicted state */
+	/* "czechout -m path" to recreate conflicted state */
 	if (opts->merge)
 		unmerge_marked_index(&the_index);
 
@@ -360,13 +360,13 @@ static int checkout_paths(const struct checkout_opts *opts,
 		struct cache_entry *ce = active_cache[pos];
 		if (ce->ce_flags & CE_MATCHED) {
 			if (!ce_stage(ce)) {
-				errs |= checkout_entry(ce, &state, NULL);
+				errs |= czechout_entry(ce, &state, NULL);
 				continue;
 			}
 			if (opts->writeout_stage)
-				errs |= checkout_stage(opts->writeout_stage, ce, pos, &state);
+				errs |= czechout_stage(opts->writeout_stage, ce, pos, &state);
 			else if (opts->merge)
-				errs |= checkout_merged(pos, &state);
+				errs |= czechout_merged(pos, &state);
 			pos = skip_same_name(ce, pos) - 1;
 		}
 	}
@@ -377,7 +377,7 @@ static int checkout_paths(const struct checkout_opts *opts,
 	read_ref_full("HEAD", 0, rev, NULL);
 	head = lookup_commit_reference_gently(rev, 1);
 
-	errs |= post_checkout_hook(head, head, 0);
+	errs |= post_czechout_hook(head, head, 0);
 	return errs;
 }
 
@@ -404,7 +404,7 @@ static void describe_detached_head(const char *msg, struct commit *commit)
 	strbuf_release(&sb);
 }
 
-static int reset_tree(struct tree *tree, const struct checkout_opts *o,
+static int reset_tree(struct tree *tree, const struct czechout_opts *o,
 		      int worktree, int *writeout_error)
 {
 	struct unpack_trees_options opts;
@@ -444,9 +444,9 @@ struct branch_info {
 	struct commit *commit; /* The named commit */
 	/*
 	 * if not null the branch is detached because it's already
-	 * checked out in this checkout
+	 * checked out in this czechout
 	 */
-	char *checkout;
+	char *czechout;
 };
 
 static void setup_branch_path(struct branch_info *branch)
@@ -460,7 +460,7 @@ static void setup_branch_path(struct branch_info *branch)
 	branch->path = strbuf_detach(&buf, NULL);
 }
 
-static int merge_working_tree(const struct checkout_opts *opts,
+static int merge_working_tree(const struct czechout_opts *opts,
 			      struct branch_info *old,
 			      struct branch_info *new,
 			      int *writeout_error)
@@ -487,7 +487,7 @@ static int merge_working_tree(const struct checkout_opts *opts,
 		topts.src_index = &the_index;
 		topts.dst_index = &the_index;
 
-		setup_unpack_trees_porcelain(&topts, "checkout");
+		setup_unpack_trees_porcelain(&topts, "czechout");
 
 		refresh_cache(REFRESH_QUIET);
 
@@ -497,7 +497,7 @@ static int merge_working_tree(const struct checkout_opts *opts,
 		}
 
 		/* 2-way merge to the new branch */
-		topts.initial_checkout = is_cache_unborn();
+		topts.initial_czechout = is_cache_unborn();
 		topts.update = 1;
 		topts.merge = 1;
 		topts.gently = opts->merge && old->commit;
@@ -602,7 +602,7 @@ static void report_tracking(struct branch_info *new)
 	strbuf_release(&sb);
 }
 
-static void update_refs_for_switch(const struct checkout_opts *opts,
+static void update_refs_for_switch(const struct czechout_opts *opts,
 				   struct branch_info *old,
 				   struct branch_info *new)
 {
@@ -644,7 +644,7 @@ static void update_refs_for_switch(const struct checkout_opts *opts,
 
 	reflog_msg = getenv("GIT_REFLOG_ACTION");
 	if (!reflog_msg)
-		strbuf_addf(&msg, "checkout: moving from %s to %s",
+		strbuf_addf(&msg, "czechout: moving from %s to %s",
 			old_desc ? old_desc : "(invalid)", new->name);
 	else
 		strbuf_insert(&msg, 0, reflog_msg, strlen(reflog_msg));
@@ -799,7 +799,7 @@ static void orphaned_commit_warning(struct commit *old, struct commit *new)
 	free(refs.objects);
 }
 
-static int switch_branches(const struct checkout_opts *opts,
+static int switch_branches(const struct czechout_opts *opts,
 			   struct branch_info *new)
 {
 	int ret = 0;
@@ -835,15 +835,15 @@ static int switch_branches(const struct checkout_opts *opts,
 
 	update_refs_for_switch(opts, &old, new);
 
-	ret = post_checkout_hook(old.commit, new->commit, 1);
+	ret = post_czechout_hook(old.commit, new->commit, 1);
 	free(path_to_free);
 	return ret || writeout_error;
 }
 
-static int git_checkout_config(const char *var, const char *value, void *cb)
+static int git_czechout_config(const char *var, const char *value, void *cb)
 {
 	if (!strcmp(var, "diff.ignoresubmodules")) {
-		struct checkout_opts *opts = cb;
+		struct czechout_opts *opts = cb;
 		handle_ignore_submodules_arg(&opts->diff_options, value);
 		return 0;
 	}
@@ -898,7 +898,7 @@ static const char *unique_tracking_name(const char *name, unsigned char *sha1)
 static int parse_branchname_arg(int argc, const char **argv,
 				int dwim_new_local_branch_ok,
 				struct branch_info *new,
-				struct checkout_opts *opts,
+				struct czechout_opts *opts,
 				unsigned char rev[20])
 {
 	struct tree **source_tree = &opts->source_tree;
@@ -911,16 +911,16 @@ static int parse_branchname_arg(int argc, const char **argv,
 	int i;
 
 	/*
-	 * case 1: git checkout <ref> -- [<paths>]
+	 * case 1: git czechout <ref> -- [<paths>]
 	 *
 	 *   <ref> must be a valid tree, everything after the '--' must be
 	 *   a path.
 	 *
-	 * case 2: git checkout -- [<paths>]
+	 * case 2: git czechout -- [<paths>]
 	 *
 	 *   everything after the '--' must be paths.
 	 *
-	 * case 3: git checkout <something> [--]
+	 * case 3: git czechout <something> [--]
 	 *
 	 *   (a) If <something> is a commit, that is to
 	 *       switch to the branch or detach HEAD at it.  As a special case,
@@ -941,7 +941,7 @@ static int parse_branchname_arg(int argc, const char **argv,
 	 *       - else if it's a path, treat it like case (2)
 	 *       - else: fail.
 	 *
-	 * case 4: git checkout <something> <paths>
+	 * case 4: git czechout <something> <paths>
 	 *
 	 *   The first argument must not be ambiguous.
 	 *   - If it's *only* a reference, treat it like case (1).
@@ -985,7 +985,7 @@ static int parse_branchname_arg(int argc, const char **argv,
 		    (check_filename(NULL, arg) || !no_wildcard(arg)))
 			recover_with_dwim = 0;
 		/*
-		 * Accept "git checkout foo" and "git checkout foo --"
+		 * Accept "git czechout foo" and "git czechout foo --"
 		 * as candidates for dwim.
 		 */
 		if (!(argc == 1 && !has_dash_dash) &&
@@ -1038,7 +1038,7 @@ static int parse_branchname_arg(int argc, const char **argv,
 	if (!has_dash_dash) {/* case (3).(d) -> (1) */
 		/*
 		 * Do not complain the most common case
-		 *	git checkout branch
+		 *	git czechout branch
 		 * even if there happen to be a file called 'branch';
 		 * it would be extremely annoying.
 		 */
@@ -1053,7 +1053,7 @@ static int parse_branchname_arg(int argc, const char **argv,
 	return argcount;
 }
 
-static int switch_unborn_to_new_branch(const struct checkout_opts *opts)
+static int switch_unborn_to_new_branch(const struct czechout_opts *opts)
 {
 	int status;
 	struct strbuf branch_ref = STRBUF_INIT;
@@ -1061,7 +1061,7 @@ static int switch_unborn_to_new_branch(const struct checkout_opts *opts)
 	if (!opts->new_branch)
 		die(_("You are on a branch yet to be born"));
 	strbuf_addf(&branch_ref, "refs/heads/%s", opts->new_branch);
-	status = create_symref("HEAD", branch_ref.buf, "checkout -b");
+	status = create_symref("HEAD", branch_ref.buf, "czechout -b");
 	strbuf_release(&branch_ref);
 	if (!opts->quiet)
 		fprintf(stderr, _("Switched to a new branch '%s'\n"),
@@ -1069,7 +1069,7 @@ static int switch_unborn_to_new_branch(const struct checkout_opts *opts)
 	return status;
 }
 
-static int checkout_branch(struct checkout_opts *opts,
+static int czechout_branch(struct czechout_opts *opts,
 			   struct branch_info *new)
 {
 	if (opts->pathspec.nr)
@@ -1125,28 +1125,28 @@ static int checkout_branch(struct checkout_opts *opts,
 	return switch_branches(opts, new);
 }
 
-int cmd_checkout(int argc, const char **argv, const char *prefix)
+int cmd_czechout(int argc, const char **argv, const char *prefix)
 {
-	struct checkout_opts opts;
+	struct czechout_opts opts;
 	struct branch_info new;
 	char *conflict_style = NULL;
 	int dwim_new_local_branch = 1;
 	struct option options[] = {
 		OPT__QUIET(&opts.quiet, N_("suppress progress reporting")),
 		OPT_STRING('b', NULL, &opts.new_branch, N_("branch"),
-			   N_("create and checkout a new branch")),
+			   N_("create and czechout a new branch")),
 		OPT_STRING('B', NULL, &opts.new_branch_force, N_("branch"),
-			   N_("create/reset and checkout a branch")),
+			   N_("create/reset and czechout a branch")),
 		OPT_BOOL('l', NULL, &opts.new_branch_log, N_("create reflog for new branch")),
 		OPT_BOOL(0, "detach", &opts.force_detach, N_("detach the HEAD at named commit")),
 		OPT_SET_INT('t', "track",  &opts.track, N_("set upstream info for new branch"),
 			BRANCH_TRACK_EXPLICIT),
 		OPT_STRING(0, "orphan", &opts.new_orphan_branch, N_("new-branch"), N_("new unparented branch")),
-		OPT_SET_INT('2', "ours", &opts.writeout_stage, N_("checkout our version for unmerged files"),
+		OPT_SET_INT('2', "ours", &opts.writeout_stage, N_("czechout our version for unmerged files"),
 			    2),
-		OPT_SET_INT('3', "theirs", &opts.writeout_stage, N_("checkout their version for unmerged files"),
+		OPT_SET_INT('3', "theirs", &opts.writeout_stage, N_("czechout their version for unmerged files"),
 			    3),
-		OPT__FORCE(&opts.force, N_("force checkout (throw away local modifications)")),
+		OPT__FORCE(&opts.force, N_("force czechout (throw away local modifications)")),
 		OPT_BOOL('m', "merge", &opts.merge, N_("perform a 3-way merge with the new branch")),
 		OPT_BOOL(0, "overwrite-ignore", &opts.overwrite_ignore, N_("update ignored files (default)")),
 		OPT_STRING(0, "conflict", &conflict_style, N_("style"),
@@ -1155,7 +1155,7 @@ int cmd_checkout(int argc, const char **argv, const char *prefix)
 		OPT_BOOL(0, "ignore-skip-worktree-bits", &opts.ignore_skipworktree,
 			 N_("do not limit pathspecs to sparse entries only")),
 		OPT_HIDDEN_BOOL(0, "guess", &dwim_new_local_branch,
-				N_("second guess 'git checkout <no-such-branch>'")),
+				N_("second guess 'git czechout <no-such-branch>'")),
 		OPT_BOOL(0, "ignore-other-worktrees", &opts.ignore_other_worktrees,
 			 N_("do not check if another worktree is holding the given ref")),
 		OPT_BOOL(0, "progress", &opts.show_progress, N_("force progress reporting")),
@@ -1169,11 +1169,11 @@ int cmd_checkout(int argc, const char **argv, const char *prefix)
 	opts.show_progress = -1;
 
 	gitmodules_config();
-	git_config(git_checkout_config, &opts);
+	git_config(git_czechout_config, &opts);
 
 	opts.track = BRANCH_TRACK_UNSPECIFIED;
 
-	argc = parse_options(argc, argv, prefix, options, checkout_usage,
+	argc = parse_options(argc, argv, prefix, options, czechout_usage,
 			     PARSE_OPT_KEEP_DASHDASH);
 
 	if (opts.show_progress < 0) {
@@ -1221,9 +1221,9 @@ int cmd_checkout(int argc, const char **argv, const char *prefix)
 	 *
 	 * Handle
 	 *
-	 *  1) git checkout <tree> -- [<paths>]
-	 *  2) git checkout -- [<paths>]
-	 *  3) git checkout <something> [<paths>]
+	 *  1) git czechout <tree> -- [<paths>]
+	 *  2) git czechout -- [<paths>]
+	 *  3) git czechout <something> [<paths>]
 	 *
 	 * including "last branch" syntax and DWIM-ery for names of
 	 * remote branches, erroring out for invalid or ambiguous cases.
@@ -1255,15 +1255,15 @@ int cmd_checkout(int argc, const char **argv, const char *prefix)
 		 */
 		if (opts.new_branch && argc == 1)
 			die(_("Cannot update paths and switch to branch '%s' at the same time.\n"
-			      "Did you intend to checkout '%s' which can not be resolved as commit?"),
+			      "Did you intend to czechout '%s' which can not be resolved as commit?"),
 			    opts.new_branch, argv[0]);
 
 		if (opts.force_detach)
-			die(_("git checkout: --detach does not take a path argument '%s'"),
+			die(_("git czechout: --detach does not take a path argument '%s'"),
 			    argv[0]);
 
 		if (1 < !!opts.writeout_stage + !!opts.force + !!opts.merge)
-			die(_("git checkout: --ours/--theirs, --force and --merge are incompatible when\n"
+			die(_("git czechout: --ours/--theirs, --force and --merge are incompatible when\n"
 			      "checking out of the index."));
 	}
 
@@ -1279,7 +1279,7 @@ int cmd_checkout(int argc, const char **argv, const char *prefix)
 	}
 
 	if (opts.patch_mode || opts.pathspec.nr)
-		return checkout_paths(&opts, new.name);
+		return czechout_paths(&opts, new.name);
 	else
-		return checkout_branch(&opts, &new);
+		return czechout_branch(&opts, &new);
 }
