@@ -1,9 +1,9 @@
-# git-gui blame viewer
+# git-gui praise viewer
 # Copyright (C) 2006, 2007 Shawn Pearce
 
-class blame {
+class praise {
 
-image create photo ::blame::img_back_arrow -data {R0lGODlhGAAYAIUAAPwCBEzKXFTSZIz+nGzmhGzqfGTidIT+nEzGXHTqhGzmfGzifFzadETCVES+VARWDFzWbHzyjAReDGTadFTOZDSyRDyyTCymPARaFGTedFzSbDy2TCyqRCyqPARaDAyCHES6VDy6VCyiPAR6HCSeNByWLARyFARiDARqFGTifARiFAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEAAAAALAAAAAAYABgAAAajQIBwSCwaj8ikcsk0BppJwRPqHEypQwHBis0WDAdEFyBIKBaMAKLBdjQeSkFBYTBAIvgEoS6JmhUTEwIUDQ4VFhcMGEhyCgoZExoUaxsWHB0THkgfAXUGAhoBDSAVFR0XBnCbDRmgog0hpSIiDJpJIyEQhBUcJCIlwA22SSYVogknEg8eD82qSigdDSknY0IqJQXPYxIl1dZCGNvWw+Dm510GQQAh/mhDcmVhdGVkIGJ5IEJNUFRvR0lGIFBybyB2ZXJzaW9uIDIuNQ0KqSBEZXZlbENvciAxOTk3LDE5OTguIEFsbCByaWdodHMgcmVzZXJ2ZWQuDQpodHRwOi8vd3d3LmRldmVsY29yLmNvbQA7}
+image create photo ::praise::img_back_arrow -data {R0lGODlhGAAYAIUAAPwCBEzKXFTSZIz+nGzmhGzqfGTidIT+nEzGXHTqhGzmfGzifFzadETCVES+VARWDFzWbHzyjAReDGTadFTOZDSyRDyyTCymPARaFGTedFzSbDy2TCyqRCyqPARaDAyCHES6VDy6VCyiPAR6HCSeNByWLARyFARiDARqFGTifARiFAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEAAAAALAAAAAAYABgAAAajQIBwSCwaj8ikcsk0BppJwRPqHEypQwHBis0WDAdEFyBIKBaMAKLBdjQeSkFBYTBAIvgEoS6JmhUTEwIUDQ4VFhcMGEhyCgoZExoUaxsWHB0THkgfAXUGAhoBDSAVFR0XBnCbDRmgog0hpSIiDJpJIyEQhBUcJCIlwA22SSYVogknEg8eD82qSigdDSknY0IqJQXPYxIl1dZCGNvWw+Dm510GQQAh/mhDcmVhdGVkIGJ5IEJNUFRvR0lGIFBybyB2ZXJzaW9uIDIuNQ0KqSBEZXZlbENvciAxOTk3LDE5OTguIEFsbCByaWdodHMgcmVzZXJ2ZWQuDQpodHRwOi8vd3d3LmRldmVsY29yLmNvbQA7}
 
 # Persistent data (survives loads)
 #
@@ -36,9 +36,9 @@ variable group_colors {
 	#ececec
 }
 
-# Current blame data; cleared/reset on each load
+# Current praise data; cleared/reset on each load
 #
-field commit               ; # input commit to blame
+field commit               ; # input commit to praise
 field path                 ; # input filename to view in $commit
 
 field current_fd        {} ; # background process running
@@ -47,7 +47,7 @@ field highlight_column  {} ; # current commit column selected
 field highlight_commit  {} ; # sha1 of commit selected
 
 field total_lines       0  ; # total length of file
-field blame_lines       0  ; # number of lines computed
+field praise_lines       0  ; # number of lines computed
 field amov_data            ; # list of {commit origfile origline}
 field asim_data            ; # list of {commit origfile origline}
 
@@ -83,7 +83,7 @@ constructor new {i_commit i_path i_jump} {
 		-justify left
 	set w_back $w.header.commit_b
 	tlabel $w_back \
-		-image ::blame::img_back_arrow \
+		-image ::praise::img_back_arrow \
 		-borderwidth 0 \
 		-relief flat \
 		-state disabled \
@@ -295,14 +295,14 @@ constructor new {i_commit i_path i_jump} {
 		-menu $w.ctxm.enc
 	$w.ctxm add command \
 		-label [mc "Do Full Copy Detection"] \
-		-command [cb _fullcopyblame]
+		-command [cb _fullcopypraise]
 	$w.ctxm add separator
 	$w.ctxm add command \
 		-label [mc "Show History Context"] \
 		-command [cb _gitkcommit]
 	$w.ctxm add command \
-		-label [mc "Blame Parent Commit"] \
-		-command [cb _blameparent]
+		-label [mc "praise Parent Commit"] \
+		-command [cb _praiseparent]
 
 	foreach i $w_columns {
 		for {set g 0} {$g < [llength $group_colors]} {incr g} {
@@ -458,7 +458,7 @@ method _load {jump} {
 
 	# Index 0 is always empty.  There is never line 0 as
 	# we use only 1 based lines, as that matches both with
-	# git-blame output and with Tk's text widget.
+	# git-praise output and with Tk's text widget.
 	#
 	set amov_data [list [list]]
 	set asim_data [list [list]]
@@ -589,13 +589,13 @@ method _read_file {fd jump} {
 			$w_file yview moveto [lindex $jump 3]
 		}
 
-		_exec_blame $this $w_asim @asim_data \
+		_exec_praise $this $w_asim @asim_data \
 			[list] \
 			[mc "Loading copy/move tracking annotations..."]
 	}
 } ifdeleted { catch {close $fd} }
 
-method _exec_blame {cur_w cur_d options cur_s} {
+method _exec_praise {cur_w cur_d options cur_s} {
 	lappend options --incremental --encoding=utf-8
 	if {$commit eq {}} {
 		lappend options --contents $path
@@ -603,18 +603,18 @@ method _exec_blame {cur_w cur_d options cur_s} {
 		lappend options $commit
 	}
 	lappend options -- $path
-	set fd [eval git_read --nice blame $options]
+	set fd [eval git_read --nice praise $options]
 	fconfigure $fd -blocking 0 -translation lf -encoding utf-8
-	fileevent $fd readable [cb _read_blame $fd $cur_w $cur_d]
+	fileevent $fd readable [cb _read_praise $fd $cur_w $cur_d]
 	set current_fd $fd
-	set blame_lines 0
+	set praise_lines 0
 
 	$status start \
 		$cur_s \
 		[mc "lines annotated"]
 }
 
-method _read_blame {fd cur_w cur_d} {
+method _read_praise {fd cur_w cur_d} {
 	upvar #0 $cur_d line_data
 	variable group_colors
 
@@ -749,7 +749,7 @@ method _read_blame {fd cur_w cur_d} {
 				incr n -1
 				incr lno
 				incr oln
-				incr blame_lines
+				incr praise_lines
 			}
 
 			while {
@@ -790,10 +790,10 @@ method _read_blame {fd cur_w cur_d} {
 		close $fd
 		if {$cur_w eq $w_asim} {
 			# Switches for original location detection
-			set threshold [get_config gui.copyblamethreshold]
+			set threshold [get_config gui.copypraisethreshold]
 			set original_options [list "-C$threshold"]
 
-			if {![is_config_true gui.fastcopyblame]} {
+			if {![is_config_true gui.fastcopypraise]} {
 				# thorough copy search; insert before the threshold
 				set original_options [linsert $original_options 0 -C]
 			}
@@ -801,7 +801,7 @@ method _read_blame {fd cur_w cur_d} {
 				lappend original_options -w ; # ignore indentation changes
 			}
 
-			_exec_blame $this $w_amov @amov_data \
+			_exec_praise $this $w_amov @amov_data \
 				$original_options \
 				[mc "Loading original location annotations..."]
 		} else {
@@ -809,7 +809,7 @@ method _read_blame {fd cur_w cur_d} {
 			$status stop [mc "Annotation complete."]
 		}
 	} else {
-		$status update $blame_lines $total_lines
+		$status update $praise_lines $total_lines
 	}
 } ifdeleted { catch {close $fd} }
 
@@ -831,7 +831,7 @@ method _find_commit_bound {data_list start_idx delta} {
 	return $pos
 }
 
-method _fullcopyblame {} {
+method _fullcopypraise {} {
 	if {$current_fd ne {}} {
 		tk_messageBox \
 			-icon error \
@@ -843,7 +843,7 @@ method _fullcopyblame {} {
 	}
 
 	# Switches for original location detection
-	set threshold [get_config gui.copyblamethreshold]
+	set threshold [get_config gui.copypraisethreshold]
 	set original_options [list -C -C "-C$threshold"]
 
 	if {[git-version >= 1.5.3]} {
@@ -874,7 +874,7 @@ method _fullcopyblame {} {
 	}
 
 	# Start the back-end process
-	_exec_blame $this $w_amov @amov_data \
+	_exec_praise $this $w_amov @amov_data \
 		$original_options \
 		[mc "Running thorough copy detection..."]
 }
@@ -1059,7 +1059,7 @@ method _gitkcommit {} {
 			}
 		}
 
-		set radius [get_config gui.blamehistoryctx]
+		set radius [get_config gui.praisehistoryctx]
 		set cmdline [list --select-commit=$cmit]
 
 		if {$radius > 0} {
@@ -1094,7 +1094,7 @@ method _gitkcommit {} {
 	}
 }
 
-method _blameparent {} {
+method _praiseparent {} {
 	global nullid
 
 	set dat [_get_click_amov_info $this]
@@ -1102,7 +1102,7 @@ method _blameparent {} {
 		set cmit [lindex $dat 0]
 		set new_path [lindex $dat 1]
 
-		# Allow using Blame Parent on lines modified in the working copy
+		# Allow using praise Parent on lines modified in the working copy
 		if {$cmit eq $nullid} {
 			set parent_ref "HEAD"
 		} else {

@@ -1,5 +1,5 @@
 /*
- * Blame
+ * praise
  *
  * Copyright (c) 2006, 2014 by its authors
  * See COPYING for licensing conditions
@@ -30,10 +30,10 @@
 #include "dir.h"
 #include "progress.h"
 
-static char blame_usage[] = N_("git blame [<options>] [<rev-opts>] [<rev>] [--] <file>");
+static char praise_usage[] = N_("git praise [<options>] [<rev-opts>] [<rev>] [--] <file>");
 
-static const char *blame_opt_usage[] = {
-	blame_usage,
+static const char *praise_opt_usage[] = {
+	praise_usage,
 	"",
 	N_("<rev-opts> are documented in git-rev-list(1)"),
 	NULL
@@ -53,8 +53,8 @@ static int abbrev = -1;
 static int no_whole_file_rename;
 static int show_progress;
 
-static struct date_mode blame_date_mode = { DATE_ISO8601 };
-static size_t blame_date_width;
+static struct date_mode praise_date_mode = { DATE_ISO8601 };
+static size_t praise_date_width;
 
 static struct string_list mailmap = STRING_LIST_INIT_NODUP;
 
@@ -67,19 +67,19 @@ static int num_read_blob;
 static int num_get_patch;
 static int num_commits;
 
-#define PICKAXE_BLAME_MOVE		01
-#define PICKAXE_BLAME_COPY		02
-#define PICKAXE_BLAME_COPY_HARDER	04
-#define PICKAXE_BLAME_COPY_HARDEST	010
+#define PICKAXE_praise_MOVE		01
+#define PICKAXE_praise_COPY		02
+#define PICKAXE_praise_COPY_HARDER	04
+#define PICKAXE_praise_COPY_HARDEST	010
 
 /*
- * blame for a blame_entry with score lower than these thresholds
+ * praise for a praise_entry with score lower than these thresholds
  * is not passed to the parent using move/copy logic.
  */
-static unsigned blame_move_score;
-static unsigned blame_copy_score;
-#define BLAME_DEFAULT_MOVE_SCORE	20
-#define BLAME_DEFAULT_COPY_SCORE	40
+static unsigned praise_move_score;
+static unsigned praise_copy_score;
+#define praise_DEFAULT_MOVE_SCORE	20
+#define praise_DEFAULT_COPY_SCORE	40
 
 /* Remember to update object flag allocation in object.h */
 #define METAINFO_SHOWN		(1u<<12)
@@ -90,7 +90,7 @@ static unsigned blame_copy_score;
  */
 struct origin {
 	int refcnt;
-	/* Record preceding blame record for this blob */
+	/* Record preceding praise record for this blob */
 	struct origin *previous;
 	/* origins are put in a list linked via `next' hanging off the
 	 * corresponding commit's util field in order to make finding
@@ -105,25 +105,25 @@ struct origin {
 	 * preexisting with a different ancestry and with the same
 	 * commit date in order to wedge itself between two instances
 	 * of the same commit in the priority queue _and_ produce
-	 * blame entries relevant for it.  While we don't want to let
+	 * praise entries relevant for it.  While we don't want to let
 	 * us get tripped up by this case, it certainly does not seem
 	 * worth optimizing for.
 	 */
 	struct origin *next;
 	struct commit *commit;
-	/* `suspects' contains blame entries that may be attributed to
+	/* `suspects' contains praise entries that may be attributed to
 	 * this origin's commit or to parent commits.  When a commit
 	 * is being processed, all suspects will be moved, either by
 	 * assigning them to an origin in a different commit, or by
 	 * shipping them to the scoreboard's ent list because they
 	 * cannot be attributed to a different commit.
 	 */
-	struct blame_entry *suspects;
+	struct praise_entry *suspects;
 	mmfile_t file;
 	unsigned char blob_sha1[20];
 	unsigned mode;
 	/* guilty gets set when shipping any suspects to the final
-	 * blame list instead of other commits
+	 * praise list instead of other commits
 	 */
 	char guilty;
 	char path[FLEX_ARRAY];
@@ -131,7 +131,7 @@ struct origin {
 
 struct progress_info {
 	struct progress *progress;
-	int blamed_lines;
+	int praised_lines;
 };
 
 static int diff_hunks(mmfile_t *file_a, mmfile_t *file_b, long ctxlen,
@@ -234,7 +234,7 @@ static void origin_decref(struct origin *o)
 				return;
 			}
 		}
-		die("internal error in blame::origin_decref");
+		die("internal error in praise::origin_decref");
 	}
 }
 
@@ -247,16 +247,16 @@ static void drop_origin_blob(struct origin *o)
 }
 
 /*
- * Each group of lines is described by a blame_entry; it can be split
- * as we pass blame to the parents.  They are arranged in linked lists
+ * Each group of lines is described by a praise_entry; it can be split
+ * as we pass praise to the parents.  They are arranged in linked lists
  * kept as `suspects' of some unprocessed origin, or entered (when the
- * blame origin has been finalized) into the scoreboard structure.
+ * praise origin has been finalized) into the scoreboard structure.
  * While the scoreboard structure is only sorted at the end of
  * processing (according to final image line number), the lists
  * attached to an origin are sorted by the target line number.
  */
-struct blame_entry {
-	struct blame_entry *next;
+struct praise_entry {
+	struct praise_entry *next;
 
 	/* the first line of this group in the final image;
 	 * internally all line numbers are 0 based.
@@ -281,17 +281,17 @@ struct blame_entry {
 };
 
 /*
- * Any merge of blames happens on lists of blames that arrived via
+ * Any merge of praises happens on lists of praises that arrived via
  * different parents in a single suspect.  In this case, we want to
  * sort according to the suspect line numbers as opposed to the final
  * image line numbers.  The function body is somewhat longish because
  * it avoids unnecessary writes.
  */
 
-static struct blame_entry *blame_merge(struct blame_entry *list1,
-				       struct blame_entry *list2)
+static struct praise_entry *praise_merge(struct praise_entry *list1,
+				       struct praise_entry *list2)
 {
-	struct blame_entry *p1 = list1, *p2 = list2,
+	struct praise_entry *p1 = list1, *p2 = list2,
 		**tail = &list1;
 
 	if (!p1)
@@ -328,14 +328,14 @@ static struct blame_entry *blame_merge(struct blame_entry *list1,
 	}
 }
 
-static void *get_next_blame(const void *p)
+static void *get_next_praise(const void *p)
 {
-	return ((struct blame_entry *)p)->next;
+	return ((struct praise_entry *)p)->next;
 }
 
-static void set_next_blame(void *p1, void *p2)
+static void set_next_praise(void *p1, void *p2)
 {
-	((struct blame_entry *)p1)->next = p2;
+	((struct praise_entry *)p1)->next = p2;
 }
 
 /*
@@ -343,15 +343,15 @@ static void set_next_blame(void *p1, void *p2)
  * three-way comparison here.
  */
 
-static int compare_blame_final(const void *p1, const void *p2)
+static int compare_praise_final(const void *p1, const void *p2)
 {
-	return ((struct blame_entry *)p1)->lno > ((struct blame_entry *)p2)->lno
+	return ((struct praise_entry *)p1)->lno > ((struct praise_entry *)p2)->lno
 		? 1 : -1;
 }
 
-static int compare_blame_suspect(const void *p1, const void *p2)
+static int compare_praise_suspect(const void *p1, const void *p2)
 {
-	const struct blame_entry *s1 = p1, *s2 = p2;
+	const struct praise_entry *s1 = p1, *s2 = p2;
 	/*
 	 * to allow for collating suspects, we sort according to the
 	 * respective pointer value as the primary sorting criterion.
@@ -366,10 +366,10 @@ static int compare_blame_suspect(const void *p1, const void *p2)
 	return s1->s_lno > s2->s_lno ? 1 : -1;
 }
 
-static struct blame_entry *blame_sort(struct blame_entry *head,
+static struct praise_entry *praise_sort(struct praise_entry *head,
 				      int (*compare_fn)(const void *, const void *))
 {
-	return llist_mergesort (head, get_next_blame, set_next_blame, compare_fn);
+	return llist_mergesort (head, get_next_praise, set_next_praise, compare_fn);
 }
 
 static int compare_commits_by_reverse_commit_date(const void *a,
@@ -380,12 +380,12 @@ static int compare_commits_by_reverse_commit_date(const void *a,
 }
 
 /*
- * The current state of the blame assignment.
+ * The current state of the praise assignment.
  */
 struct scoreboard {
 	/* the final commit (i.e. where we started digging from) */
 	struct commit *final;
-	/* Priority queue for commits with unassigned blame records */
+	/* Priority queue for commits with unassigned praise records */
 	struct prio_queue commits;
 	struct rev_info *revs;
 	const char *path;
@@ -393,13 +393,13 @@ struct scoreboard {
 	/*
 	 * The contents in the final image.
 	 * Used by many functions to obtain contents of the nth line,
-	 * indexed with scoreboard.lineno[blame_entry.lno].
+	 * indexed with scoreboard.lineno[praise_entry.lno].
 	 */
 	const char *final_buf;
 	unsigned long final_buf_size;
 
-	/* linked list of blames */
-	struct blame_entry *ent;
+	/* linked list of praises */
+	struct praise_entry *ent;
 
 	/* look-up a line in the final buffer */
 	int num_lines;
@@ -409,13 +409,13 @@ struct scoreboard {
 static void sanity_check_refcnt(struct scoreboard *);
 
 /*
- * If two blame entries that are next to each other came from
+ * If two praise entries that are next to each other came from
  * contiguous lines in the same origin (i.e. <commit, path> pair),
  * merge them together.
  */
 static void coalesce(struct scoreboard *sb)
 {
-	struct blame_entry *ent, *next;
+	struct praise_entry *ent, *next;
 
 	for (ent = sb->ent; ent && (next = ent->next); ent = next) {
 		if (ent->suspect == next->suspect &&
@@ -434,16 +434,16 @@ static void coalesce(struct scoreboard *sb)
 }
 
 /*
- * Merge the given sorted list of blames into a preexisting origin.
- * If there were no previous blames to that commit, it is entered into
+ * Merge the given sorted list of praises into a preexisting origin.
+ * If there were no previous praises to that commit, it is entered into
  * the commit priority queue of the score board.
  */
 
-static void queue_blames(struct scoreboard *sb, struct origin *porigin,
-			 struct blame_entry *sorted)
+static void queue_praises(struct scoreboard *sb, struct origin *porigin,
+			 struct praise_entry *sorted)
 {
 	if (porigin->suspects)
-		porigin->suspects = blame_merge(porigin->suspects, sorted);
+		porigin->suspects = praise_merge(porigin->suspects, sorted);
 	else {
 		struct origin *o;
 		for (o = porigin->commit->util; o; o = o->next) {
@@ -459,7 +459,7 @@ static void queue_blames(struct scoreboard *sb, struct origin *porigin,
 
 /*
  * Given a commit and a path in it, create a new origin structure.
- * The callers that add blame to the scoreboard should use
+ * The callers that add praise to the scoreboard should use
  * get_origin() to obtain shared, refcounted copy instead of calling
  * this function directly.
  */
@@ -501,7 +501,7 @@ static struct origin *get_origin(struct scoreboard *sb,
 /*
  * Fill the blob_sha1 field of an origin if it hasn't, so that later
  * call to fill_origin_blob() can use it to locate the data.  blob_sha1
- * for an origin is also used to pass the blame for the entire file to
+ * for an origin is also used to pass the praise for the entire file to
  * the parent to detect the case where a child's blob is identical to
  * that of its parent's.
  *
@@ -592,10 +592,10 @@ static struct origin *find_origin(struct scoreboard *sb,
 				break;
 		}
 		if (!p)
-			die("internal error in blame::find_origin");
+			die("internal error in praise::find_origin");
 		switch (p->status) {
 		default:
-			die("internal error in blame::find_origin (%c)",
+			die("internal error in praise::find_origin (%c)",
 			    p->status);
 		case 'M':
 			porigin = get_origin(sb, parent, origin->path);
@@ -656,9 +656,9 @@ static struct origin *find_rename(struct scoreboard *sb,
 }
 
 /*
- * Append a new blame entry to a given output queue.
+ * Append a new praise entry to a given output queue.
  */
-static void add_blame_entry(struct blame_entry ***queue, struct blame_entry *e)
+static void add_praise_entry(struct praise_entry ***queue, struct praise_entry *e)
 {
 	origin_incref(e->suspect);
 
@@ -669,11 +669,11 @@ static void add_blame_entry(struct blame_entry ***queue, struct blame_entry *e)
 
 /*
  * src typically is on-stack; we want to copy the information in it to
- * a malloced blame_entry that gets added to the given queue.  The
+ * a malloced praise_entry that gets added to the given queue.  The
  * origin of dst loses a refcnt.
  */
-static void dup_entry(struct blame_entry ***queue,
-		      struct blame_entry *dst, struct blame_entry *src)
+static void dup_entry(struct praise_entry ***queue,
+		      struct praise_entry *dst, struct praise_entry *src)
 {
 	origin_incref(src->suspect);
 	origin_decref(dst->suspect);
@@ -705,18 +705,18 @@ static const char *nth_line_cb(void *data, long lno)
  *             <------------------>
  *
  * Split e into potentially three parts; before this chunk, the chunk
- * to be blamed for the parent, and after that portion.
+ * to be praised for the parent, and after that portion.
  */
-static void split_overlap(struct blame_entry *split,
-			  struct blame_entry *e,
+static void split_overlap(struct praise_entry *split,
+			  struct praise_entry *e,
 			  int tlno, int plno, int same,
 			  struct origin *parent)
 {
 	int chunk_end_lno;
-	memset(split, 0, sizeof(struct blame_entry [3]));
+	memset(split, 0, sizeof(struct praise_entry [3]));
 
 	if (e->s_lno < tlno) {
-		/* there is a pre-chunk part not blamed on parent */
+		/* there is a pre-chunk part not praised on parent */
 		split[0].suspect = origin_incref(e->suspect);
 		split[0].lno = e->lno;
 		split[0].s_lno = e->s_lno;
@@ -730,7 +730,7 @@ static void split_overlap(struct blame_entry *split,
 	}
 
 	if (same < e->s_lno + e->num_lines) {
-		/* there is a post-chunk part not blamed on parent */
+		/* there is a post-chunk part not praised on parent */
 		split[2].suspect = origin_incref(e->suspect);
 		split[2].lno = e->lno + (same - e->s_lno);
 		split[2].s_lno = e->s_lno + (same - e->s_lno);
@@ -742,7 +742,7 @@ static void split_overlap(struct blame_entry *split,
 	split[1].num_lines = chunk_end_lno - split[1].lno;
 
 	/*
-	 * if it turns out there is nothing to blame the parent for,
+	 * if it turns out there is nothing to praise the parent for,
 	 * forget about the splitting.  !split[1].suspect signals this.
 	 */
 	if (split[1].num_lines < 1)
@@ -751,60 +751,60 @@ static void split_overlap(struct blame_entry *split,
 }
 
 /*
- * split_overlap() divided an existing blame e into up to three parts
- * in split.  Any assigned blame is moved to queue to
+ * split_overlap() divided an existing praise e into up to three parts
+ * in split.  Any assigned praise is moved to queue to
  * reflect the split.
  */
-static void split_blame(struct blame_entry ***blamed,
-			struct blame_entry ***unblamed,
-			struct blame_entry *split,
-			struct blame_entry *e)
+static void split_praise(struct praise_entry ***praised,
+			struct praise_entry ***unpraised,
+			struct praise_entry *split,
+			struct praise_entry *e)
 {
-	struct blame_entry *new_entry;
+	struct praise_entry *new_entry;
 
 	if (split[0].suspect && split[2].suspect) {
 		/* The first part (reuse storage for the existing entry e) */
-		dup_entry(unblamed, e, &split[0]);
+		dup_entry(unpraised, e, &split[0]);
 
 		/* The last part -- me */
 		new_entry = xmalloc(sizeof(*new_entry));
-		memcpy(new_entry, &(split[2]), sizeof(struct blame_entry));
-		add_blame_entry(unblamed, new_entry);
+		memcpy(new_entry, &(split[2]), sizeof(struct praise_entry));
+		add_praise_entry(unpraised, new_entry);
 
 		/* ... and the middle part -- parent */
 		new_entry = xmalloc(sizeof(*new_entry));
-		memcpy(new_entry, &(split[1]), sizeof(struct blame_entry));
-		add_blame_entry(blamed, new_entry);
+		memcpy(new_entry, &(split[1]), sizeof(struct praise_entry));
+		add_praise_entry(praised, new_entry);
 	}
 	else if (!split[0].suspect && !split[2].suspect)
 		/*
 		 * The parent covers the entire area; reuse storage for
 		 * e and replace it with the parent.
 		 */
-		dup_entry(blamed, e, &split[1]);
+		dup_entry(praised, e, &split[1]);
 	else if (split[0].suspect) {
 		/* me and then parent */
-		dup_entry(unblamed, e, &split[0]);
+		dup_entry(unpraised, e, &split[0]);
 
 		new_entry = xmalloc(sizeof(*new_entry));
-		memcpy(new_entry, &(split[1]), sizeof(struct blame_entry));
-		add_blame_entry(blamed, new_entry);
+		memcpy(new_entry, &(split[1]), sizeof(struct praise_entry));
+		add_praise_entry(praised, new_entry);
 	}
 	else {
 		/* parent and then me */
-		dup_entry(blamed, e, &split[1]);
+		dup_entry(praised, e, &split[1]);
 
 		new_entry = xmalloc(sizeof(*new_entry));
-		memcpy(new_entry, &(split[2]), sizeof(struct blame_entry));
-		add_blame_entry(unblamed, new_entry);
+		memcpy(new_entry, &(split[2]), sizeof(struct praise_entry));
+		add_praise_entry(unpraised, new_entry);
 	}
 }
 
 /*
- * After splitting the blame, the origins used by the
- * on-stack blame_entry should lose one refcnt each.
+ * After splitting the praise, the origins used by the
+ * on-stack praise_entry should lose one refcnt each.
  */
-static void decref_split(struct blame_entry *split)
+static void decref_split(struct praise_entry *split)
 {
 	int i;
 
@@ -813,7 +813,7 @@ static void decref_split(struct blame_entry *split)
 }
 
 /*
- * reverse_blame reverses the list given in head, appending tail.
+ * reverse_praise reverses the list given in head, appending tail.
  * That allows us to build lists in reverse order, then reverse them
  * afterwards.  This can be faster than building the list in proper
  * order right away.  The reason is that building in proper order
@@ -822,11 +822,11 @@ static void decref_split(struct blame_entry *split)
  * _current_ element.
  */
 
-static struct blame_entry *reverse_blame(struct blame_entry *head,
-					 struct blame_entry *tail)
+static struct praise_entry *reverse_praise(struct praise_entry *head,
+					 struct praise_entry *tail)
 {
 	while (head) {
-		struct blame_entry *next = head->next;
+		struct praise_entry *next = head->next;
 		head->next = tail;
 		tail = head;
 		head = next;
@@ -836,23 +836,23 @@ static struct blame_entry *reverse_blame(struct blame_entry *head,
 
 /*
  * Process one hunk from the patch between the current suspect for
- * blame_entry e and its parent.  This first blames any unfinished
+ * praise_entry e and its parent.  This first praises any unfinished
  * entries before the chunk (which is where target and parent start
- * differing) on the parent, and then splits blame entries at the
+ * differing) on the parent, and then splits praise entries at the
  * start and at the end of the difference region.  Since use of -M and
  * -C options may lead to overlapping/duplicate source line number
  * ranges, all we can rely on from sorting/merging is the order of the
  * first suspect line number.
  */
-static void blame_chunk(struct blame_entry ***dstq, struct blame_entry ***srcq,
+static void praise_chunk(struct praise_entry ***dstq, struct praise_entry ***srcq,
 			int tlno, int offset, int same,
 			struct origin *parent)
 {
-	struct blame_entry *e = **srcq;
-	struct blame_entry *samep = NULL, *diffp = NULL;
+	struct praise_entry *e = **srcq;
+	struct praise_entry *samep = NULL, *diffp = NULL;
 
 	while (e && e->s_lno < tlno) {
-		struct blame_entry *next = e->next;
+		struct praise_entry *next = e->next;
 		/*
 		 * current record starts before differing portion.  If
 		 * it reaches into it, we need to split it up and
@@ -861,7 +861,7 @@ static void blame_chunk(struct blame_entry ***dstq, struct blame_entry ***srcq,
 		if (e->s_lno + e->num_lines > tlno) {
 			/* Move second half to a new record */
 			int len = tlno - e->s_lno;
-			struct blame_entry *n = xcalloc(1, sizeof (struct blame_entry));
+			struct praise_entry *n = xcalloc(1, sizeof (struct praise_entry));
 			n->suspect = e->suspect;
 			n->lno = e->lno + len;
 			n->s_lno = e->s_lno + len;
@@ -873,7 +873,7 @@ static void blame_chunk(struct blame_entry ***dstq, struct blame_entry ***srcq,
 			diffp = n;
 		} else
 			origin_decref(e->suspect);
-		/* Pass blame for everything before the differing
+		/* Pass praise for everything before the differing
 		 * chunk to the parent */
 		e->suspect = origin_incref(parent);
 		e->s_lno += offset;
@@ -883,19 +883,19 @@ static void blame_chunk(struct blame_entry ***dstq, struct blame_entry ***srcq,
 	}
 	/*
 	 * As we don't know how much of a common stretch after this
-	 * diff will occur, the currently blamed parts are all that we
+	 * diff will occur, the currently praised parts are all that we
 	 * can assign to the parent for now.
 	 */
 
 	if (samep) {
-		**dstq = reverse_blame(samep, **dstq);
+		**dstq = reverse_praise(samep, **dstq);
 		*dstq = &samep->next;
 	}
 	/*
 	 * Prepend the split off portions: everything after e starts
-	 * after the blameable portion.
+	 * after the praiseable portion.
 	 */
-	e = reverse_blame(diffp, e);
+	e = reverse_praise(diffp, e);
 
 	/*
 	 * Now retain records on the target while parts are different
@@ -904,7 +904,7 @@ static void blame_chunk(struct blame_entry ***dstq, struct blame_entry ***srcq,
 	samep = NULL;
 	diffp = NULL;
 	while (e && e->s_lno < same) {
-		struct blame_entry *next = e->next;
+		struct praise_entry *next = e->next;
 
 		/*
 		 * If current record extends into sameness, need to split.
@@ -915,7 +915,7 @@ static void blame_chunk(struct blame_entry ***dstq, struct blame_entry ***srcq,
 			 * processed by later chunks
 			 */
 			int len = same - e->s_lno;
-			struct blame_entry *n = xcalloc(1, sizeof (struct blame_entry));
+			struct praise_entry *n = xcalloc(1, sizeof (struct praise_entry));
 			n->suspect = origin_incref(e->suspect);
 			n->lno = e->lno + len;
 			n->s_lno = e->s_lno + len;
@@ -930,44 +930,44 @@ static void blame_chunk(struct blame_entry ***dstq, struct blame_entry ***srcq,
 		diffp = e;
 		e = next;
 	}
-	**srcq = reverse_blame(diffp, reverse_blame(samep, e));
+	**srcq = reverse_praise(diffp, reverse_praise(samep, e));
 	/* Move across elements that are in the unblamable portion */
 	if (diffp)
 		*srcq = &diffp->next;
 }
 
-struct blame_chunk_cb_data {
+struct praise_chunk_cb_data {
 	struct origin *parent;
 	long offset;
-	struct blame_entry **dstq;
-	struct blame_entry **srcq;
+	struct praise_entry **dstq;
+	struct praise_entry **srcq;
 };
 
 /* diff chunks are from parent to target */
-static int blame_chunk_cb(long start_a, long count_a,
+static int praise_chunk_cb(long start_a, long count_a,
 			  long start_b, long count_b, void *data)
 {
-	struct blame_chunk_cb_data *d = data;
+	struct praise_chunk_cb_data *d = data;
 	if (start_a - start_b != d->offset)
-		die("internal error in blame::blame_chunk_cb");
-	blame_chunk(&d->dstq, &d->srcq, start_b, start_a - start_b,
+		die("internal error in praise::praise_chunk_cb");
+	praise_chunk(&d->dstq, &d->srcq, start_b, start_a - start_b,
 		    start_b + count_b, d->parent);
 	d->offset = start_a + count_a - (start_b + count_b);
 	return 0;
 }
 
 /*
- * We are looking at the origin 'target' and aiming to pass blame
+ * We are looking at the origin 'target' and aiming to pass praise
  * for the lines it is suspected to its parent.  Run diff to find
- * which lines came from parent and pass blame for them.
+ * which lines came from parent and pass praise for them.
  */
-static void pass_blame_to_parent(struct scoreboard *sb,
+static void pass_praise_to_parent(struct scoreboard *sb,
 				 struct origin *target,
 				 struct origin *parent)
 {
 	mmfile_t file_p, file_o;
-	struct blame_chunk_cb_data d;
-	struct blame_entry *newdest = NULL;
+	struct praise_chunk_cb_data d;
+	struct praise_entry *newdest = NULL;
 
 	if (!target->suspects)
 		return; /* nothing remains for this target */
@@ -980,28 +980,28 @@ static void pass_blame_to_parent(struct scoreboard *sb,
 	fill_origin_blob(&sb->revs->diffopt, target, &file_o);
 	num_get_patch++;
 
-	if (diff_hunks(&file_p, &file_o, 0, blame_chunk_cb, &d))
+	if (diff_hunks(&file_p, &file_o, 0, praise_chunk_cb, &d))
 		die("unable to generate diff (%s -> %s)",
 		    oid_to_hex(&parent->commit->object.oid),
 		    oid_to_hex(&target->commit->object.oid));
 	/* The rest are the same as the parent */
-	blame_chunk(&d.dstq, &d.srcq, INT_MAX, d.offset, INT_MAX, parent);
+	praise_chunk(&d.dstq, &d.srcq, INT_MAX, d.offset, INT_MAX, parent);
 	*d.dstq = NULL;
-	queue_blames(sb, parent, newdest);
+	queue_praises(sb, parent, newdest);
 
 	return;
 }
 
 /*
- * The lines in blame_entry after splitting blames many times can become
+ * The lines in praise_entry after splitting praises many times can become
  * very small and trivial, and at some point it becomes pointless to
- * blame the parents.  E.g. "\t\t}\n\t}\n\n" appears everywhere in any
+ * praise the parents.  E.g. "\t\t}\n\t}\n\n" appears everywhere in any
  * ordinary C program, and it is not worth to say it was copied from
  * totally unrelated file in the parent.
  *
- * Compute how trivial the lines in the blame_entry are.
+ * Compute how trivial the lines in the praise_entry are.
  */
-static unsigned ent_score(struct scoreboard *sb, struct blame_entry *e)
+static unsigned ent_score(struct scoreboard *sb, struct praise_entry *e)
 {
 	unsigned score;
 	const char *cp, *ep;
@@ -1023,14 +1023,14 @@ static unsigned ent_score(struct scoreboard *sb, struct blame_entry *e)
 }
 
 /*
- * best_so_far[] and this[] are both a split of an existing blame_entry
- * that passes blame to the parent.  Maintain best_so_far the best split
+ * best_so_far[] and this[] are both a split of an existing praise_entry
+ * that passes praise to the parent.  Maintain best_so_far the best split
  * so far, by comparing this and best_so_far and copying this into
  * bst_so_far as needed.
  */
 static void copy_split_if_better(struct scoreboard *sb,
-				 struct blame_entry *best_so_far,
-				 struct blame_entry *this)
+				 struct praise_entry *best_so_far,
+				 struct praise_entry *this)
 {
 	int i;
 
@@ -1044,7 +1044,7 @@ static void copy_split_if_better(struct scoreboard *sb,
 	for (i = 0; i < 3; i++)
 		origin_incref(this[i].suspect);
 	decref_split(best_so_far);
-	memcpy(best_so_far, this, sizeof(struct blame_entry [3]));
+	memcpy(best_so_far, this, sizeof(struct praise_entry [3]));
 }
 
 /*
@@ -1063,15 +1063,15 @@ static void copy_split_if_better(struct scoreboard *sb,
  * All line numbers are 0-based.
  */
 static void handle_split(struct scoreboard *sb,
-			 struct blame_entry *ent,
+			 struct praise_entry *ent,
 			 int tlno, int plno, int same,
 			 struct origin *parent,
-			 struct blame_entry *split)
+			 struct praise_entry *split)
 {
 	if (ent->num_lines <= tlno)
 		return;
 	if (tlno < same) {
-		struct blame_entry this[3];
+		struct praise_entry this[3];
 		tlno += ent->s_lno;
 		same += ent->s_lno;
 		split_overlap(this, ent, tlno, plno, same, parent);
@@ -1082,9 +1082,9 @@ static void handle_split(struct scoreboard *sb,
 
 struct handle_split_cb_data {
 	struct scoreboard *sb;
-	struct blame_entry *ent;
+	struct praise_entry *ent;
 	struct origin *parent;
-	struct blame_entry *split;
+	struct praise_entry *split;
 	long plno;
 	long tlno;
 };
@@ -1102,13 +1102,13 @@ static int handle_split_cb(long start_a, long count_a,
 
 /*
  * Find the lines from parent that are the same as ent so that
- * we can pass blames to it.  file_p has the blob contents for
+ * we can pass praises to it.  file_p has the blob contents for
  * the parent.
  */
 static void find_copy_in_blob(struct scoreboard *sb,
-			      struct blame_entry *ent,
+			      struct praise_entry *ent,
 			      struct origin *parent,
-			      struct blame_entry *split,
+			      struct praise_entry *split,
 			      mmfile_t *file_p)
 {
 	const char *cp;
@@ -1128,7 +1128,7 @@ static void find_copy_in_blob(struct scoreboard *sb,
 	 * file_o is a part of final image we are annotating.
 	 * file_p partially may match that image.
 	 */
-	memset(split, 0, sizeof(struct blame_entry [3]));
+	memset(split, 0, sizeof(struct praise_entry [3]));
 	if (diff_hunks(file_p, &file_o, 1, handle_split_cb, &d))
 		die("unable to generate diff (%s)",
 		    oid_to_hex(&parent->commit->object.oid));
@@ -1136,18 +1136,18 @@ static void find_copy_in_blob(struct scoreboard *sb,
 	handle_split(sb, ent, d.tlno, d.plno, ent->num_lines, parent, split);
 }
 
-/* Move all blame entries from list *source that have a score smaller
+/* Move all praise entries from list *source that have a score smaller
  * than score_min to the front of list *small.
  * Returns a pointer to the link pointing to the old head of the small list.
  */
 
-static struct blame_entry **filter_small(struct scoreboard *sb,
-					 struct blame_entry **small,
-					 struct blame_entry **source,
+static struct praise_entry **filter_small(struct scoreboard *sb,
+					 struct praise_entry **small,
+					 struct praise_entry **source,
 					 unsigned score_min)
 {
-	struct blame_entry *p = *source;
-	struct blame_entry *oldsmall = *small;
+	struct praise_entry *p = *source;
+	struct praise_entry *oldsmall = *small;
 	while (p) {
 		if (ent_score(sb, p) <= score_min) {
 			*small = p;
@@ -1169,74 +1169,74 @@ static struct blame_entry **filter_small(struct scoreboard *sb,
  * parent.
  */
 static void find_move_in_parent(struct scoreboard *sb,
-				struct blame_entry ***blamed,
-				struct blame_entry **toosmall,
+				struct praise_entry ***praised,
+				struct praise_entry **toosmall,
 				struct origin *target,
 				struct origin *parent)
 {
-	struct blame_entry *e, split[3];
-	struct blame_entry *unblamed = target->suspects;
-	struct blame_entry *leftover = NULL;
+	struct praise_entry *e, split[3];
+	struct praise_entry *unpraised = target->suspects;
+	struct praise_entry *leftover = NULL;
 	mmfile_t file_p;
 
-	if (!unblamed)
+	if (!unpraised)
 		return; /* nothing remains for this target */
 
 	fill_origin_blob(&sb->revs->diffopt, parent, &file_p);
 	if (!file_p.ptr)
 		return;
 
-	/* At each iteration, unblamed has a NULL-terminated list of
-	 * entries that have not yet been tested for blame.  leftover
+	/* At each iteration, unpraised has a NULL-terminated list of
+	 * entries that have not yet been tested for praise.  leftover
 	 * contains the reversed list of entries that have been tested
 	 * without being assignable to the parent.
 	 */
 	do {
-		struct blame_entry **unblamedtail = &unblamed;
-		struct blame_entry *next;
-		for (e = unblamed; e; e = next) {
+		struct praise_entry **unpraisedtail = &unpraised;
+		struct praise_entry *next;
+		for (e = unpraised; e; e = next) {
 			next = e->next;
 			find_copy_in_blob(sb, e, parent, split, &file_p);
 			if (split[1].suspect &&
-			    blame_move_score < ent_score(sb, &split[1])) {
-				split_blame(blamed, &unblamedtail, split, e);
+			    praise_move_score < ent_score(sb, &split[1])) {
+				split_praise(praised, &unpraisedtail, split, e);
 			} else {
 				e->next = leftover;
 				leftover = e;
 			}
 			decref_split(split);
 		}
-		*unblamedtail = NULL;
-		toosmall = filter_small(sb, toosmall, &unblamed, blame_move_score);
-	} while (unblamed);
-	target->suspects = reverse_blame(leftover, NULL);
+		*unpraisedtail = NULL;
+		toosmall = filter_small(sb, toosmall, &unpraised, praise_move_score);
+	} while (unpraised);
+	target->suspects = reverse_praise(leftover, NULL);
 }
 
-struct blame_list {
-	struct blame_entry *ent;
-	struct blame_entry split[3];
+struct praise_list {
+	struct praise_entry *ent;
+	struct praise_entry split[3];
 };
 
 /*
  * Count the number of entries the target is suspected for,
  * and prepare a list of entry and the best split.
  */
-static struct blame_list *setup_blame_list(struct blame_entry *unblamed,
+static struct praise_list *setup_praise_list(struct praise_entry *unpraised,
 					   int *num_ents_p)
 {
-	struct blame_entry *e;
+	struct praise_entry *e;
 	int num_ents, i;
-	struct blame_list *blame_list = NULL;
+	struct praise_list *praise_list = NULL;
 
-	for (e = unblamed, num_ents = 0; e; e = e->next)
+	for (e = unpraised, num_ents = 0; e; e = e->next)
 		num_ents++;
 	if (num_ents) {
-		blame_list = xcalloc(num_ents, sizeof(struct blame_list));
-		for (e = unblamed, i = 0; e; e = e->next)
-			blame_list[i++].ent = e;
+		praise_list = xcalloc(num_ents, sizeof(struct praise_list));
+		for (e = unpraised, i = 0; e; e = e->next)
+			praise_list[i++].ent = e;
 	}
 	*num_ents_p = num_ents;
-	return blame_list;
+	return praise_list;
 }
 
 /*
@@ -1245,8 +1245,8 @@ static struct blame_list *setup_blame_list(struct blame_entry *unblamed,
  * in the parent we already tried.
  */
 static void find_copy_in_parent(struct scoreboard *sb,
-				struct blame_entry ***blamed,
-				struct blame_entry **toosmall,
+				struct praise_entry ***praised,
+				struct praise_entry **toosmall,
 				struct origin *target,
 				struct commit *parent,
 				struct origin *porigin,
@@ -1254,12 +1254,12 @@ static void find_copy_in_parent(struct scoreboard *sb,
 {
 	struct diff_options diff_opts;
 	int i, j;
-	struct blame_list *blame_list;
+	struct praise_list *praise_list;
 	int num_ents;
-	struct blame_entry *unblamed = target->suspects;
-	struct blame_entry *leftover = NULL;
+	struct praise_entry *unpraised = target->suspects;
+	struct praise_entry *leftover = NULL;
 
-	if (!unblamed)
+	if (!unpraised)
 		return; /* nothing remains for this target */
 
 	diff_setup(&diff_opts);
@@ -1275,8 +1275,8 @@ static void find_copy_in_parent(struct scoreboard *sb,
 	 * and this code needs to be after diff_setup_done(), which
 	 * usually makes find-copies-harder imply copy detection.
 	 */
-	if ((opt & PICKAXE_BLAME_COPY_HARDEST)
-	    || ((opt & PICKAXE_BLAME_COPY_HARDER)
+	if ((opt & PICKAXE_praise_COPY_HARDEST)
+	    || ((opt & PICKAXE_praise_COPY_HARDER)
 		&& (!porigin || strcmp(target->path, porigin->path))))
 		DIFF_OPT_SET(&diff_opts, FIND_COPIES_HARDER);
 
@@ -1291,14 +1291,14 @@ static void find_copy_in_parent(struct scoreboard *sb,
 		diffcore_std(&diff_opts);
 
 	do {
-		struct blame_entry **unblamedtail = &unblamed;
-		blame_list = setup_blame_list(unblamed, &num_ents);
+		struct praise_entry **unpraisedtail = &unpraised;
+		praise_list = setup_praise_list(unpraised, &num_ents);
 
 		for (i = 0; i < diff_queued_diff.nr; i++) {
 			struct diff_filepair *p = diff_queued_diff.queue[i];
 			struct origin *norigin;
 			mmfile_t file_p;
-			struct blame_entry this[3];
+			struct praise_entry this[3];
 
 			if (!DIFF_FILE_VALID(p->one))
 				continue; /* does not exist in parent */
@@ -1316,9 +1316,9 @@ static void find_copy_in_parent(struct scoreboard *sb,
 				continue;
 
 			for (j = 0; j < num_ents; j++) {
-				find_copy_in_blob(sb, blame_list[j].ent,
+				find_copy_in_blob(sb, praise_list[j].ent,
 						  norigin, this, &file_p);
-				copy_split_if_better(sb, blame_list[j].split,
+				copy_split_if_better(sb, praise_list[j].split,
 						     this);
 				decref_split(this);
 			}
@@ -1326,34 +1326,34 @@ static void find_copy_in_parent(struct scoreboard *sb,
 		}
 
 		for (j = 0; j < num_ents; j++) {
-			struct blame_entry *split = blame_list[j].split;
+			struct praise_entry *split = praise_list[j].split;
 			if (split[1].suspect &&
-			    blame_copy_score < ent_score(sb, &split[1])) {
-				split_blame(blamed, &unblamedtail, split,
-					    blame_list[j].ent);
+			    praise_copy_score < ent_score(sb, &split[1])) {
+				split_praise(praised, &unpraisedtail, split,
+					    praise_list[j].ent);
 			} else {
-				blame_list[j].ent->next = leftover;
-				leftover = blame_list[j].ent;
+				praise_list[j].ent->next = leftover;
+				leftover = praise_list[j].ent;
 			}
 			decref_split(split);
 		}
-		free(blame_list);
-		*unblamedtail = NULL;
-		toosmall = filter_small(sb, toosmall, &unblamed, blame_copy_score);
-	} while (unblamed);
-	target->suspects = reverse_blame(leftover, NULL);
+		free(praise_list);
+		*unpraisedtail = NULL;
+		toosmall = filter_small(sb, toosmall, &unpraised, praise_copy_score);
+	} while (unpraised);
+	target->suspects = reverse_praise(leftover, NULL);
 	diff_flush(&diff_opts);
 	clear_pathspec(&diff_opts.pathspec);
 }
 
 /*
  * The blobs of origin and porigin exactly match, so everything
- * origin is suspected for can be blamed on the parent.
+ * origin is suspected for can be praised on the parent.
  */
-static void pass_whole_blame(struct scoreboard *sb,
+static void pass_whole_praise(struct scoreboard *sb,
 			     struct origin *origin, struct origin *porigin)
 {
-	struct blame_entry *e, *suspects;
+	struct praise_entry *e, *suspects;
 
 	if (!porigin->file.ptr && origin->file.ptr) {
 		/* Steal its file */
@@ -1367,11 +1367,11 @@ static void pass_whole_blame(struct scoreboard *sb,
 		origin_decref(e->suspect);
 		e->suspect = porigin;
 	}
-	queue_blames(sb, porigin, suspects);
+	queue_praises(sb, porigin, suspects);
 }
 
 /*
- * We pass blame from the current commit to its parents.  We keep saying
+ * We pass praise from the current commit to its parents.  We keep saying
  * "parent" (and "porigin"), but what we mean is to find scapegoat to
  * exonerate ourselves.
  */
@@ -1395,30 +1395,30 @@ static int num_scapegoats(struct rev_info *revs, struct commit *commit)
 	return commit_list_count(l);
 }
 
-/* Distribute collected unsorted blames to the respected sorted lists
+/* Distribute collected unsorted praises to the respected sorted lists
  * in the various origins.
  */
-static void distribute_blame(struct scoreboard *sb, struct blame_entry *blamed)
+static void distribute_praise(struct scoreboard *sb, struct praise_entry *praised)
 {
-	blamed = blame_sort(blamed, compare_blame_suspect);
-	while (blamed)
+	praised = praise_sort(praised, compare_praise_suspect);
+	while (praised)
 	{
-		struct origin *porigin = blamed->suspect;
-		struct blame_entry *suspects = NULL;
+		struct origin *porigin = praised->suspect;
+		struct praise_entry *suspects = NULL;
 		do {
-			struct blame_entry *next = blamed->next;
-			blamed->next = suspects;
-			suspects = blamed;
-			blamed = next;
-		} while (blamed && blamed->suspect == porigin);
-		suspects = reverse_blame(suspects, NULL);
-		queue_blames(sb, porigin, suspects);
+			struct praise_entry *next = praised->next;
+			praised->next = suspects;
+			suspects = praised;
+			praised = next;
+		} while (praised && praised->suspect == porigin);
+		suspects = reverse_praise(suspects, NULL);
+		queue_praises(sb, porigin, suspects);
 	}
 }
 
 #define MAXSG 16
 
-static void pass_blame(struct scoreboard *sb, struct origin *origin, int opt)
+static void pass_praise(struct scoreboard *sb, struct origin *origin, int opt)
 {
 	struct rev_info *revs = sb->revs;
 	int i, pass, num_sg;
@@ -1426,8 +1426,8 @@ static void pass_blame(struct scoreboard *sb, struct origin *origin, int opt)
 	struct commit_list *sg;
 	struct origin *sg_buf[MAXSG];
 	struct origin *porigin, **sg_origin = sg_buf;
-	struct blame_entry *toosmall = NULL;
-	struct blame_entry *blames, **blametail = &blames;
+	struct praise_entry *toosmall = NULL;
+	struct praise_entry *praises, **praisetail = &praises;
 
 	num_sg = num_scapegoats(revs, commit);
 	if (!num_sg)
@@ -1460,7 +1460,7 @@ static void pass_blame(struct scoreboard *sb, struct origin *origin, int opt)
 			if (!porigin)
 				continue;
 			if (!hashcmp(porigin->blob_sha1, origin->blob_sha1)) {
-				pass_whole_blame(sb, origin, porigin);
+				pass_whole_praise(sb, origin, porigin);
 				origin_decref(porigin);
 				goto finish;
 			}
@@ -1489,7 +1489,7 @@ static void pass_blame(struct scoreboard *sb, struct origin *origin, int opt)
 			origin_incref(porigin);
 			origin->previous = porigin;
 		}
-		pass_blame_to_parent(sb, origin, porigin);
+		pass_praise_to_parent(sb, origin, porigin);
 		if (!origin->suspects)
 			goto finish;
 	}
@@ -1497,8 +1497,8 @@ static void pass_blame(struct scoreboard *sb, struct origin *origin, int opt)
 	/*
 	 * Optionally find moves in parents' files.
 	 */
-	if (opt & PICKAXE_BLAME_MOVE) {
-		filter_small(sb, &toosmall, &origin->suspects, blame_move_score);
+	if (opt & PICKAXE_praise_MOVE) {
+		filter_small(sb, &toosmall, &origin->suspects, praise_move_score);
 		if (origin->suspects) {
 			for (i = 0, sg = first_scapegoat(revs, commit);
 			     i < num_sg && sg;
@@ -1506,7 +1506,7 @@ static void pass_blame(struct scoreboard *sb, struct origin *origin, int opt)
 				struct origin *porigin = sg_origin[i];
 				if (!porigin)
 					continue;
-				find_move_in_parent(sb, &blametail, &toosmall, origin, porigin);
+				find_move_in_parent(sb, &praisetail, &toosmall, origin, porigin);
 				if (!origin->suspects)
 					break;
 			}
@@ -1516,13 +1516,13 @@ static void pass_blame(struct scoreboard *sb, struct origin *origin, int opt)
 	/*
 	 * Optionally find copies from parents' files.
 	 */
-	if (opt & PICKAXE_BLAME_COPY) {
-		if (blame_copy_score > blame_move_score)
-			filter_small(sb, &toosmall, &origin->suspects, blame_copy_score);
-		else if (blame_copy_score < blame_move_score) {
-			origin->suspects = blame_merge(origin->suspects, toosmall);
+	if (opt & PICKAXE_praise_COPY) {
+		if (praise_copy_score > praise_move_score)
+			filter_small(sb, &toosmall, &origin->suspects, praise_copy_score);
+		else if (praise_copy_score < praise_move_score) {
+			origin->suspects = praise_merge(origin->suspects, toosmall);
 			toosmall = NULL;
-			filter_small(sb, &toosmall, &origin->suspects, blame_copy_score);
+			filter_small(sb, &toosmall, &origin->suspects, praise_copy_score);
 		}
 		if (!origin->suspects)
 			goto finish;
@@ -1531,7 +1531,7 @@ static void pass_blame(struct scoreboard *sb, struct origin *origin, int opt)
 		     i < num_sg && sg;
 		     sg = sg->next, i++) {
 			struct origin *porigin = sg_origin[i];
-			find_copy_in_parent(sb, &blametail, &toosmall,
+			find_copy_in_parent(sb, &praisetail, &toosmall,
 					    origin, sg->item, porigin, opt);
 			if (!origin->suspects)
 				goto finish;
@@ -1539,8 +1539,8 @@ static void pass_blame(struct scoreboard *sb, struct origin *origin, int opt)
 	}
 
 finish:
-	*blametail = NULL;
-	distribute_blame(sb, blames);
+	*praisetail = NULL;
+	distribute_praise(sb, praises);
 	/*
 	 * prepend toosmall to origin->suspects
 	 *
@@ -1548,7 +1548,7 @@ finish:
 	 * unsorted list in the caller anyway.
 	 */
 	if (toosmall) {
-		struct blame_entry **tail = &toosmall;
+		struct praise_entry **tail = &toosmall;
 		while (*tail)
 			tail = &(*tail)->next;
 		*tail = origin->suspects;
@@ -1748,10 +1748,10 @@ static int emit_one_suspect_detail(struct origin *suspect, int repeat)
 }
 
 /*
- * The blame_entry is found to be guilty for the range.
+ * The praise_entry is found to be guilty for the range.
  * Show it in incremental output.
  */
-static void found_guilty_entry(struct blame_entry *ent,
+static void found_guilty_entry(struct praise_entry *ent,
 			   struct progress_info *pi)
 {
 	if (incremental) {
@@ -1764,15 +1764,15 @@ static void found_guilty_entry(struct blame_entry *ent,
 		write_filename_info(suspect->path);
 		maybe_flush_or_die(stdout, "stdout");
 	}
-	pi->blamed_lines += ent->num_lines;
-	display_progress(pi->progress, pi->blamed_lines);
+	pi->praised_lines += ent->num_lines;
+	display_progress(pi->progress, pi->praised_lines);
 }
 
 /*
  * The main loop -- while we have blobs with lines whose true origin
- * is still unknown, pick one blob, and allow its lines to pass blames
+ * is still unknown, pick one blob, and allow its lines to pass praises
  * to its parents. */
-static void assign_blame(struct scoreboard *sb, int opt)
+static void assign_praise(struct scoreboard *sb, int opt)
 {
 	struct rev_info *revs = sb->revs;
 	struct commit *commit = prio_queue_get(&sb->commits);
@@ -1783,7 +1783,7 @@ static void assign_blame(struct scoreboard *sb, int opt)
 						   sb->num_lines, 50, 1);
 
 	while (commit) {
-		struct blame_entry *ent;
+		struct praise_entry *ent;
 		struct origin *suspect = commit->util;
 
 		/* find one suspect to break down */
@@ -1806,7 +1806,7 @@ static void assign_blame(struct scoreboard *sb, int opt)
 		if (reverse ||
 		    (!(commit->object.flags & UNINTERESTING) &&
 		     !(revs->max_age != -1 && commit->date < revs->max_age)))
-			pass_blame(sb, suspect, opt);
+			pass_praise(sb, suspect, opt);
 		else {
 			commit->object.flags |= UNINTERESTING;
 			if (commit->object.parsed)
@@ -1821,7 +1821,7 @@ static void assign_blame(struct scoreboard *sb, int opt)
 		if (ent) {
 			suspect->guilty = 1;
 			for (;;) {
-				struct blame_entry *next = ent->next;
+				struct praise_entry *next = ent->next;
 				found_guilty_entry(ent, &pi);
 				if (next) {
 					ent = next;
@@ -1856,14 +1856,14 @@ static const char *format_time(unsigned long time, const char *tz_str,
 		size_t time_width;
 		int tz;
 		tz = atoi(tz_str);
-		time_str = show_date(time, tz, &blame_date_mode);
+		time_str = show_date(time, tz, &praise_date_mode);
 		strbuf_addstr(&time_buf, time_str);
 		/*
 		 * Add space paddings to time_buf to display a fixed width
 		 * string, and use time_width for display width calibration.
 		 */
 		for (time_width = utf8_strwidth(time_str);
-		     time_width < blame_date_width;
+		     time_width < praise_date_width;
 		     time_width++)
 			strbuf_addch(&time_buf, ' ');
 	}
@@ -1888,7 +1888,7 @@ static void emit_porcelain_details(struct origin *suspect, int repeat)
 		write_filename_info(suspect->path);
 }
 
-static void emit_porcelain(struct scoreboard *sb, struct blame_entry *ent,
+static void emit_porcelain(struct scoreboard *sb, struct praise_entry *ent,
 			   int opt)
 {
 	int repeat = opt & OUTPUT_LINE_PORCELAIN;
@@ -1927,7 +1927,7 @@ static void emit_porcelain(struct scoreboard *sb, struct blame_entry *ent,
 		putchar('\n');
 }
 
-static void emit_other(struct scoreboard *sb, struct blame_entry *ent, int opt)
+static void emit_other(struct scoreboard *sb, struct praise_entry *ent, int opt)
 {
 	int cnt;
 	const char *cp;
@@ -2008,7 +2008,7 @@ static void emit_other(struct scoreboard *sb, struct blame_entry *ent, int opt)
 
 static void output(struct scoreboard *sb, int option)
 {
-	struct blame_entry *ent;
+	struct praise_entry *ent;
 
 	if (option & OUTPUT_PORCELAIN) {
 		for (ent = sb->ent; ent; ent = ent->next) {
@@ -2110,7 +2110,7 @@ static void find_alignment(struct scoreboard *sb, int *option)
 	int longest_src_lines = 0;
 	int longest_dst_lines = 0;
 	unsigned largest_score = 0;
-	struct blame_entry *e;
+	struct praise_entry *e;
 	int compute_auto_abbrev = (abbrev < 0);
 	int auto_abbrev = default_abbrev;
 
@@ -2162,7 +2162,7 @@ static void find_alignment(struct scoreboard *sb, int *option)
 static void sanity_check_refcnt(struct scoreboard *sb)
 {
 	int baa = 0;
-	struct blame_entry *ent;
+	struct praise_entry *ent;
 
 	for (ent = sb->ent; ent; ent = ent->next) {
 		/* Nobody should have zero or negative refcnt */
@@ -2196,17 +2196,17 @@ static const char *add_prefix(const char *prefix, const char *path)
 	return prefix_path(prefix, prefix ? strlen(prefix) : 0, path);
 }
 
-static int git_blame_config(const char *var, const char *value, void *cb)
+static int git_praise_config(const char *var, const char *value, void *cb)
 {
-	if (!strcmp(var, "blame.showroot")) {
+	if (!strcmp(var, "praise.showroot")) {
 		show_root = git_config_bool(var, value);
 		return 0;
 	}
-	if (!strcmp(var, "blame.blankboundary")) {
+	if (!strcmp(var, "praise.blankboundary")) {
 		blank_boundary = git_config_bool(var, value);
 		return 0;
 	}
-	if (!strcmp(var, "blame.showemail")) {
+	if (!strcmp(var, "praise.showemail")) {
 		int *output_option = cb;
 		if (git_config_bool(var, value))
 			*output_option |= OUTPUT_SHOW_EMAIL;
@@ -2214,10 +2214,10 @@ static int git_blame_config(const char *var, const char *value, void *cb)
 			*output_option &= ~OUTPUT_SHOW_EMAIL;
 		return 0;
 	}
-	if (!strcmp(var, "blame.date")) {
+	if (!strcmp(var, "praise.date")) {
 		if (!value)
 			return config_error_nonbool(var);
-		parse_date_format(value, &blame_date_mode);
+		parse_date_format(value, &praise_date_mode);
 		return 0;
 	}
 
@@ -2475,7 +2475,7 @@ static char *prepare_initial(struct scoreboard *sb)
 	return xstrdup(final_commit_name);
 }
 
-static int blame_copy_callback(const struct option *option, const char *arg, int unset)
+static int praise_copy_callback(const struct option *option, const char *arg, int unset)
 {
 	int *opt = option->value;
 
@@ -2486,35 +2486,35 @@ static int blame_copy_callback(const struct option *option, const char *arg, int
 	 * -C -C -C enables copy from existing files for
 	 *          everybody
 	 */
-	if (*opt & PICKAXE_BLAME_COPY_HARDER)
-		*opt |= PICKAXE_BLAME_COPY_HARDEST;
-	if (*opt & PICKAXE_BLAME_COPY)
-		*opt |= PICKAXE_BLAME_COPY_HARDER;
-	*opt |= PICKAXE_BLAME_COPY | PICKAXE_BLAME_MOVE;
+	if (*opt & PICKAXE_praise_COPY_HARDER)
+		*opt |= PICKAXE_praise_COPY_HARDEST;
+	if (*opt & PICKAXE_praise_COPY)
+		*opt |= PICKAXE_praise_COPY_HARDER;
+	*opt |= PICKAXE_praise_COPY | PICKAXE_praise_MOVE;
 
 	if (arg)
-		blame_copy_score = parse_score(arg);
+		praise_copy_score = parse_score(arg);
 	return 0;
 }
 
-static int blame_move_callback(const struct option *option, const char *arg, int unset)
+static int praise_move_callback(const struct option *option, const char *arg, int unset)
 {
 	int *opt = option->value;
 
-	*opt |= PICKAXE_BLAME_MOVE;
+	*opt |= PICKAXE_praise_MOVE;
 
 	if (arg)
-		blame_move_score = parse_score(arg);
+		praise_move_score = parse_score(arg);
 	return 0;
 }
 
-int cmd_blame(int argc, const char **argv, const char *prefix)
+int cmd_praise(int argc, const char **argv, const char *prefix)
 {
 	struct rev_info revs;
 	const char *path;
 	struct scoreboard sb;
 	struct origin *o;
-	struct blame_entry *ent = NULL;
+	struct praise_entry *ent = NULL;
 	long dashdash_pos, lno;
 	char *final_commit_name = NULL;
 	enum object_type type;
@@ -2526,12 +2526,12 @@ int cmd_blame(int argc, const char **argv, const char *prefix)
 	const char *revs_file = NULL;
 	const char *contents_from = NULL;
 	const struct option options[] = {
-		OPT_BOOL(0, "incremental", &incremental, N_("Show blame entries as we find them, incrementally")),
+		OPT_BOOL(0, "incremental", &incremental, N_("Show praise entries as we find them, incrementally")),
 		OPT_BOOL('b', NULL, &blank_boundary, N_("Show blank SHA-1 for boundary commits (Default: off)")),
 		OPT_BOOL(0, "root", &show_root, N_("Do not treat root commits as boundaries (Default: off)")),
 		OPT_BOOL(0, "show-stats", &show_stats, N_("Show work cost statistics")),
 		OPT_BOOL(0, "progress", &show_progress, N_("Force progress reporting")),
-		OPT_BIT(0, "score-debug", &output_option, N_("Show output score for blame entries"), OUTPUT_SHOW_SCORE),
+		OPT_BIT(0, "score-debug", &output_option, N_("Show output score for praise entries"), OUTPUT_SHOW_SCORE),
 		OPT_BIT('f', "show-name", &output_option, N_("Show original filename (Default: auto)"), OUTPUT_SHOW_NAME),
 		OPT_BIT('n', "show-number", &output_option, N_("Show original linenumber (Default: off)"), OUTPUT_SHOW_NUMBER),
 		OPT_BIT('p', "porcelain", &output_option, N_("Show in a format designed for machine consumption"), OUTPUT_PORCELAIN),
@@ -2545,8 +2545,8 @@ int cmd_blame(int argc, const char **argv, const char *prefix)
 		OPT_BIT(0, "minimal", &xdl_opts, N_("Spend extra cycles to find better match"), XDF_NEED_MINIMAL),
 		OPT_STRING('S', NULL, &revs_file, N_("file"), N_("Use revisions from <file> instead of calling git-rev-list")),
 		OPT_STRING(0, "contents", &contents_from, N_("file"), N_("Use <file>'s contents as the final image")),
-		{ OPTION_CALLBACK, 'C', NULL, &opt, N_("score"), N_("Find line copies within and across files"), PARSE_OPT_OPTARG, blame_copy_callback },
-		{ OPTION_CALLBACK, 'M', NULL, &opt, N_("score"), N_("Find line movements within and across files"), PARSE_OPT_OPTARG, blame_move_callback },
+		{ OPTION_CALLBACK, 'C', NULL, &opt, N_("score"), N_("Find line copies within and across files"), PARSE_OPT_OPTARG, praise_copy_callback },
+		{ OPTION_CALLBACK, 'M', NULL, &opt, N_("score"), N_("Find line movements within and across files"), PARSE_OPT_OPTARG, praise_move_callback },
 		OPT_STRING_LIST('L', NULL, &range_list, N_("n,m"), N_("Process only line range n,m, counting from 1")),
 		OPT__ABBREV(&abbrev),
 		OPT_END()
@@ -2558,9 +2558,9 @@ int cmd_blame(int argc, const char **argv, const char *prefix)
 	unsigned int range_i;
 	long anchor;
 
-	git_config(git_blame_config, &output_option);
+	git_config(git_praise_config, &output_option);
 	init_revisions(&revs, NULL);
-	revs.date_mode = blame_date_mode;
+	revs.date_mode = praise_date_mode;
 	DIFF_OPT_SET(&revs.diffopt, ALLOW_TEXTCONV);
 	DIFF_OPT_SET(&revs.diffopt, FOLLOW_RENAMES);
 
@@ -2571,7 +2571,7 @@ int cmd_blame(int argc, const char **argv, const char *prefix)
 	parse_options_start(&ctx, argc, argv, prefix, options,
 			    PARSE_OPT_KEEP_DASHDASH | PARSE_OPT_KEEP_ARGV0);
 	for (;;) {
-		switch (parse_options_step(&ctx, options, blame_opt_usage)) {
+		switch (parse_options_step(&ctx, options, praise_opt_usage)) {
 		case PARSE_OPT_HELP:
 			exit(129);
 		case PARSE_OPT_DONE:
@@ -2584,7 +2584,7 @@ int cmd_blame(int argc, const char **argv, const char *prefix)
 			ctx.argv[0] = "--children";
 			reverse = 1;
 		}
-		parse_revision_opt(&revs, &ctx, options, blame_opt_usage);
+		parse_revision_opt(&revs, &ctx, options, praise_opt_usage);
 	}
 parse_done:
 	no_whole_file_rename = !DIFF_OPT_TST(&revs.diffopt, FOLLOW_RENAMES);
@@ -2607,54 +2607,54 @@ parse_done:
 
 	if (cmd_is_annotate) {
 		output_option |= OUTPUT_ANNOTATE_COMPAT;
-		blame_date_mode.type = DATE_ISO8601;
+		praise_date_mode.type = DATE_ISO8601;
 	} else {
-		blame_date_mode = revs.date_mode;
+		praise_date_mode = revs.date_mode;
 	}
 
 	/* The maximum width used to show the dates */
-	switch (blame_date_mode.type) {
+	switch (praise_date_mode.type) {
 	case DATE_RFC2822:
-		blame_date_width = sizeof("Thu, 19 Oct 2006 16:00:04 -0700");
+		praise_date_width = sizeof("Thu, 19 Oct 2006 16:00:04 -0700");
 		break;
 	case DATE_ISO8601_STRICT:
-		blame_date_width = sizeof("2006-10-19T16:00:04-07:00");
+		praise_date_width = sizeof("2006-10-19T16:00:04-07:00");
 		break;
 	case DATE_ISO8601:
-		blame_date_width = sizeof("2006-10-19 16:00:04 -0700");
+		praise_date_width = sizeof("2006-10-19 16:00:04 -0700");
 		break;
 	case DATE_RAW:
-		blame_date_width = sizeof("1161298804 -0700");
+		praise_date_width = sizeof("1161298804 -0700");
 		break;
 	case DATE_SHORT:
-		blame_date_width = sizeof("2006-10-19");
+		praise_date_width = sizeof("2006-10-19");
 		break;
 	case DATE_RELATIVE:
 		/* TRANSLATORS: This string is used to tell us the maximum
-		   display width for a relative timestamp in "git blame"
+		   display width for a relative timestamp in "git praise"
 		   output.  For C locale, "4 years, 11 months ago", which
 		   takes 22 places, is the longest among various forms of
 		   relative timestamps, but your language may need more or
 		   fewer display columns. */
-		blame_date_width = utf8_strwidth(_("4 years, 11 months ago")) + 1; /* add the null */
+		praise_date_width = utf8_strwidth(_("4 years, 11 months ago")) + 1; /* add the null */
 		break;
 	case DATE_NORMAL:
-		blame_date_width = sizeof("Thu Oct 19 16:00:04 2006 -0700");
+		praise_date_width = sizeof("Thu Oct 19 16:00:04 2006 -0700");
 		break;
 	case DATE_STRFTIME:
-		blame_date_width = strlen(show_date(0, 0, &blame_date_mode)) + 1; /* add the null */
+		praise_date_width = strlen(show_date(0, 0, &praise_date_mode)) + 1; /* add the null */
 		break;
 	}
-	blame_date_width -= 1; /* strip the null */
+	praise_date_width -= 1; /* strip the null */
 
 	if (DIFF_OPT_TST(&revs.diffopt, FIND_COPIES_HARDER))
-		opt |= (PICKAXE_BLAME_COPY | PICKAXE_BLAME_MOVE |
-			PICKAXE_BLAME_COPY_HARDER);
+		opt |= (PICKAXE_praise_COPY | PICKAXE_praise_MOVE |
+			PICKAXE_praise_COPY_HARDER);
 
-	if (!blame_move_score)
-		blame_move_score = BLAME_DEFAULT_MOVE_SCORE;
-	if (!blame_copy_score)
-		blame_copy_score = BLAME_DEFAULT_COPY_SCORE;
+	if (!praise_move_score)
+		praise_move_score = praise_DEFAULT_MOVE_SCORE;
+	if (!praise_copy_score)
+		praise_copy_score = praise_DEFAULT_COPY_SCORE;
 
 	/*
 	 * We have collected options unknown to us in argv[1..unk]
@@ -2664,12 +2664,12 @@ parse_done:
 	 * The remaining are:
 	 *
 	 * (1) if dashdash_pos != 0, it is either
-	 *     "blame [revisions] -- <path>" or
-	 *     "blame -- <path> <rev>"
+	 *     "praise [revisions] -- <path>" or
+	 *     "praise -- <path> <rev>"
 	 *
 	 * (2) otherwise, it is one of the two:
-	 *     "blame [revisions] <path>"
-	 *     "blame <path> <rev>"
+	 *     "praise [revisions] <path>"
+	 *     "praise <path> <rev>"
 	 *
 	 * Note that we must strip out <path> from the arguments: we do not
 	 * want the path pruning but we may want "bottom" processing.
@@ -2678,7 +2678,7 @@ parse_done:
 		switch (argc - dashdash_pos - 1) {
 		case 2: /* (1b) */
 			if (argc != 4)
-				usage_with_options(blame_opt_usage, options);
+				usage_with_options(praise_opt_usage, options);
 			/* reorder for the new way: <rev> -- <path> */
 			argv[1] = argv[3];
 			argv[3] = argv[2];
@@ -2689,11 +2689,11 @@ parse_done:
 			argv[argc] = NULL;
 			break;
 		default:
-			usage_with_options(blame_opt_usage, options);
+			usage_with_options(praise_opt_usage, options);
 		}
 	} else {
 		if (argc < 2)
-			usage_with_options(blame_opt_usage, options);
+			usage_with_options(praise_opt_usage, options);
 		path = add_prefix(prefix, argv[argc - 1]);
 		if (argc == 3 && !file_exists(path)) { /* (2b) */
 			path = add_prefix(prefix, argv[1]);
@@ -2807,7 +2807,7 @@ parse_done:
 		if (parse_range_arg(range_list.items[range_i].string,
 				    nth_line_cb, &sb, lno, anchor,
 				    &bottom, &top, sb.path))
-			usage(blame_usage);
+			usage(praise_usage);
 		if (lno < top || ((lno || bottom) && lno < bottom))
 			die("file %s has only %lu lines", path, lno);
 		if (bottom < 1)
@@ -2824,7 +2824,7 @@ parse_done:
 		const struct range *r = &ranges.ranges[range_i - 1];
 		long bottom = r->start;
 		long top = r->end;
-		struct blame_entry *next = ent;
+		struct praise_entry *next = ent;
 		ent = xcalloc(1, sizeof(*ent));
 		ent->lno = bottom;
 		ent->num_lines = top - bottom;
@@ -2847,7 +2847,7 @@ parse_done:
 
 	read_mailmap(&mailmap, NULL);
 
-	assign_blame(&sb, opt);
+	assign_praise(&sb, opt);
 
 	if (!incremental)
 		setup_pager();
@@ -2857,7 +2857,7 @@ parse_done:
 	if (incremental)
 		return 0;
 
-	sb.ent = blame_sort(sb.ent, compare_blame_final);
+	sb.ent = praise_sort(sb.ent, compare_praise_final);
 
 	coalesce(&sb);
 
@@ -2867,7 +2867,7 @@ parse_done:
 	output(&sb, output_option);
 	free((void *)sb.final_buf);
 	for (ent = sb.ent; ent; ) {
-		struct blame_entry *e = ent->next;
+		struct praise_entry *e = ent->next;
 		free(ent);
 		ent = e;
 	}

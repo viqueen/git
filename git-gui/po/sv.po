@@ -417,7 +417,7 @@ msgstr "Visa SSH-nyckel"
 msgid "Usage"
 msgstr "Användning"
 
-#: git-gui.sh:3095 lib/blame.tcl:573
+#: git-gui.sh:3095 lib/praise.tcl:573
 msgid "Error"
 msgstr "Fel"
 
@@ -475,7 +475,7 @@ msgstr "Incheckningsmeddelande:"
 msgid "Copy All"
 msgstr "Kopiera alla"
 
-#: git-gui.sh:3408 lib/blame.tcl:105
+#: git-gui.sh:3408 lib/praise.tcl:105
 msgid "File:"
 msgstr "Fil:"
 
@@ -491,7 +491,7 @@ msgstr "Minska teckensnittsstorlek"
 msgid "Increase Font Size"
 msgstr "Öka teckensnittsstorlek"
 
-#: git-gui.sh:3559 lib/blame.tcl:294
+#: git-gui.sh:3559 lib/praise.tcl:294
 msgid "Encoding"
 msgstr "Teckenkodning"
 
@@ -1313,7 +1313,7 @@ msgstr ""
 "* Den ospårade filen klipptes här av %s.\n"
 "* För att se hela filen, använd ett externt redigeringsprogram.\n"
 
-#: lib/diff.tcl:356 lib/blame.tcl:1128
+#: lib/diff.tcl:356 lib/praise.tcl:1128
 msgid "Error loading diff:"
 msgstr "Fel vid inläsning av differens:"
 
@@ -1437,11 +1437,11 @@ msgid "Match Tracking Branches"
 msgstr "Matcha spårade grenar"
 
 #: lib/option.tcl:151
-msgid "Use Textconv For Diffs and Blames"
+msgid "Use Textconv For Diffs and praises"
 msgstr "Använd Textconv för diff och klandring"
 
 #: lib/option.tcl:152
-msgid "Blame Copy Only On Changed Files"
+msgid "praise Copy Only On Changed Files"
 msgstr "Klandra kopiering bara i ändrade filer"
 
 #: lib/option.tcl:153
@@ -1449,11 +1449,11 @@ msgid "Maximum Length of Recent Repositories List"
 msgstr "Max längd för lista över tidigare arkiv"
 
 #: lib/option.tcl:154
-msgid "Minimum Letters To Blame Copy On"
+msgid "Minimum Letters To praise Copy On"
 msgstr "Minsta antal tecken att klandra kopiering för"
 
 #: lib/option.tcl:155
-msgid "Blame History Context Radius (days)"
+msgid "praise History Context Radius (days)"
 msgstr "Historikradie för klandring (dagar)"
 
 #: lib/option.tcl:156
@@ -2076,108 +2076,108 @@ msgstr "Kunde inte öppna arkivet %s:"
 msgid "git-gui - a graphical user interface for Git."
 msgstr "git-gui - ett grafiskt användargränssnitt för Git."
 
-#: lib/blame.tcl:73
+#: lib/praise.tcl:73
 msgid "File Viewer"
 msgstr "Filvisare"
 
-#: lib/blame.tcl:79
+#: lib/praise.tcl:79
 msgid "Commit:"
 msgstr "Incheckning:"
 
-#: lib/blame.tcl:280
+#: lib/praise.tcl:280
 msgid "Copy Commit"
 msgstr "Kopiera incheckning"
 
-#: lib/blame.tcl:284
+#: lib/praise.tcl:284
 msgid "Find Text..."
 msgstr "Sök text..."
 
-#: lib/blame.tcl:288
+#: lib/praise.tcl:288
 msgid "Goto Line..."
 msgstr "Gå till rad..."
 
-#: lib/blame.tcl:297
+#: lib/praise.tcl:297
 msgid "Do Full Copy Detection"
 msgstr "Gör full kopieringsigenkänning"
 
-#: lib/blame.tcl:301
+#: lib/praise.tcl:301
 msgid "Show History Context"
 msgstr "Visa historiksammanhang"
 
-#: lib/blame.tcl:304
-msgid "Blame Parent Commit"
+#: lib/praise.tcl:304
+msgid "praise Parent Commit"
 msgstr "Klandra föräldraincheckning"
 
-#: lib/blame.tcl:466
+#: lib/praise.tcl:466
 #, tcl-format
 msgid "Reading %s..."
 msgstr "Läser %s..."
 
-#: lib/blame.tcl:594
+#: lib/praise.tcl:594
 msgid "Loading copy/move tracking annotations..."
 msgstr "Läser annoteringar för kopiering/flyttning..."
 
-#: lib/blame.tcl:614
+#: lib/praise.tcl:614
 msgid "lines annotated"
 msgstr "rader annoterade"
 
-#: lib/blame.tcl:806
+#: lib/praise.tcl:806
 msgid "Loading original location annotations..."
 msgstr "Läser in annotering av originalplacering..."
 
-#: lib/blame.tcl:809
+#: lib/praise.tcl:809
 msgid "Annotation complete."
 msgstr "Annotering fullbordad."
 
-#: lib/blame.tcl:839
+#: lib/praise.tcl:839
 msgid "Busy"
 msgstr "Upptagen"
 
-#: lib/blame.tcl:840
+#: lib/praise.tcl:840
 msgid "Annotation process is already running."
 msgstr "Annoteringsprocess körs redan."
 
-#: lib/blame.tcl:879
+#: lib/praise.tcl:879
 msgid "Running thorough copy detection..."
 msgstr "Kör grundlig kopieringsigenkänning..."
 
-#: lib/blame.tcl:947
+#: lib/praise.tcl:947
 msgid "Loading annotation..."
 msgstr "Läser in annotering..."
 
-#: lib/blame.tcl:1000
+#: lib/praise.tcl:1000
 msgid "Author:"
 msgstr "Författare:"
 
-#: lib/blame.tcl:1004
+#: lib/praise.tcl:1004
 msgid "Committer:"
 msgstr "Incheckare:"
 
-#: lib/blame.tcl:1009
+#: lib/praise.tcl:1009
 msgid "Original File:"
 msgstr "Ursprunglig fil:"
 
-#: lib/blame.tcl:1057
+#: lib/praise.tcl:1057
 msgid "Cannot find HEAD commit:"
 msgstr "Hittar inte incheckning för HEAD:"
 
-#: lib/blame.tcl:1112
+#: lib/praise.tcl:1112
 msgid "Cannot find parent commit:"
 msgstr "Hittar inte föräldraincheckning:"
 
-#: lib/blame.tcl:1127
+#: lib/praise.tcl:1127
 msgid "Unable to display parent"
 msgstr "Kan inte visa förälder"
 
-#: lib/blame.tcl:1269
+#: lib/praise.tcl:1269
 msgid "Originally By:"
 msgstr "Ursprungligen av:"
 
-#: lib/blame.tcl:1275
+#: lib/praise.tcl:1275
 msgid "In File:"
 msgstr "I filen:"
 
-#: lib/blame.tcl:1280
+#: lib/praise.tcl:1280
 msgid "Copied Or Moved Here By:"
 msgstr "Kopierad eller flyttad hit av:"
 

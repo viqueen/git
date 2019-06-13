@@ -2211,12 +2211,12 @@ _git_config ()
 		gitcvs.logfile
 		gitcvs.usecrlfattr
 		guitool.
-		gui.blamehistoryctx
+		gui.praisehistoryctx
 		gui.commitmsgwidth
-		gui.copyblamethreshold
+		gui.copypraisethreshold
 		gui.diffcontext
 		gui.encoding
-		gui.fastcopyblame
+		gui.fastcopypraise
 		gui.matchtrackingbranch
 		gui.newbranchtemplate
 		gui.pruneduringfetch
@@ -2552,7 +2552,7 @@ _git_svn ()
 	local subcommands="
 		init fetch clone rebase dcommit log find-rev
 		set-tree commit-diff info create-ignore propget
-		proplist show-ignore show-externals branch tag blame
+		proplist show-ignore show-externals branch tag praise
 		migrate mkdirs reset gc
 		"
 	local subcommand="$(__git_find_on_cmdline "$subcommands")"
@@ -2627,7 +2627,7 @@ _git_svn ()
 		tag,--*)
 			__gitcomp "--dry-run --message"
 			;;
-		blame,--*)
+		praise,--*)
 			__gitcomp "--git-format"
 			;;
 		migrate,--*)

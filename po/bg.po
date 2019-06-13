@@ -101,7 +101,7 @@
 # ========================
 # MOST IMPORTANT name asc ordering
 # ------------------------
-# add, blame, branch, checkout, clone, commit, common-cmds, config, diff, fetch, fsck, gc, git-rebase, git-stash, grep, log, mv, parse-options, push, reflog, remote, reset, revert, rm, wt-status
+# add, praise, branch, checkout, clone, commit, common-cmds, config, diff, fetch, fsck, gc, git-rebase, git-stash, grep, log, mv, parse-options, push, reflog, remote, reset, revert, rm, wt-status
 #
 # ========================
 # IMPORTANT strings, name asc ordering
@@ -188,7 +188,7 @@ msgstr "ПРЕФИКС"
 msgid "prepend prefix to each pathname in the archive"
 msgstr "добавяне на този ПРЕФИКС към всеки път в архива"
 
-#: archive.c:432 builtin/archive.c:88 builtin/blame.c:2548 builtin/blame.c:2549
+#: archive.c:432 builtin/archive.c:88 builtin/praise.c:2548 builtin/praise.c:2549
 #: builtin/config.c:60 builtin/fast-export.c:987 builtin/fast-export.c:989
 #: builtin/grep.c:722 builtin/hash-object.c:100 builtin/ls-files.c:459
 #: builtin/ls-files.c:462 builtin/notes.c:398 builtin/notes.c:561
@@ -408,7 +408,7 @@ msgid "Repository lacks these prerequisite commits:"
 msgstr "В хранилището липсват следните необходими подавания:"
 
 #: bundle.c:163 ref-filter.c:1462 sequencer.c:627 sequencer.c:1073
-#: builtin/blame.c:2755 builtin/commit.c:1056 builtin/log.c:340
+#: builtin/praise.c:2755 builtin/commit.c:1056 builtin/log.c:340
 #: builtin/log.c:863 builtin/log.c:1308 builtin/log.c:1633 builtin/log.c:1875
 #: builtin/merge.c:361 builtin/shortlog.c:170
 msgid "revision walk setup failed"
@@ -3852,140 +3852,140 @@ msgid "update BISECT_HEAD instead of checking out the current commit"
 msgstr ""
 "обновяване на указателя „BISECT_HEAD“ вместо да се използва текущото подаване"
 
-#: builtin/blame.c:33
-msgid "git blame [<options>] [<rev-opts>] [<rev>] [--] <file>"
-msgstr "git blame [ОПЦИЯ…] [ОПЦИЯ_ЗА_ВЕРСИЯТА…] [ВЕРСИЯ] [--] ФАЙЛ"
+#: builtin/praise.c:33
+msgid "git praise [<options>] [<rev-opts>] [<rev>] [--] <file>"
+msgstr "git praise [ОПЦИЯ…] [ОПЦИЯ_ЗА_ВЕРСИЯТА…] [ВЕРСИЯ] [--] ФАЙЛ"
 
-#: builtin/blame.c:38
+#: builtin/praise.c:38
 msgid "<rev-opts> are documented in git-rev-list(1)"
 msgstr "ОПЦИИте_ЗА_ВЕРСИЯТА са документирани в ръководството git-rev-list(1)"
 
-#: builtin/blame.c:1782
+#: builtin/praise.c:1782
 msgid "Blaming lines"
 msgstr "Анотирани редове"
 
-#: builtin/blame.c:2531
-msgid "Show blame entries as we find them, incrementally"
+#: builtin/praise.c:2531
+msgid "Show praise entries as we find them, incrementally"
 msgstr "Извеждане на анотациите с намирането им, последователно"
 
 # FIXME SHA-1 -> SHA1
-#: builtin/blame.c:2532
+#: builtin/praise.c:2532
 msgid "Show blank SHA-1 for boundary commits (Default: off)"
 msgstr ""
 "Извеждане на празни суми по SHA1 за граничните подавания (стандартно опцията "
 "е изключена)"
 
-#: builtin/blame.c:2533
+#: builtin/praise.c:2533
 msgid "Do not treat root commits as boundaries (Default: off)"
 msgstr ""
 "Началните подавания да не се считат за гранични (стандартно опцията е "
 "изключена)"
 
-#: builtin/blame.c:2534
+#: builtin/praise.c:2534
 msgid "Show work cost statistics"
 msgstr "Извеждане на статистика за извършените действия"
 
-#: builtin/blame.c:2535
+#: builtin/praise.c:2535
 msgid "Force progress reporting"
 msgstr "Принудително извеждане на напредъка"
 
-#: builtin/blame.c:2536
-msgid "Show output score for blame entries"
+#: builtin/praise.c:2536
+msgid "Show output score for praise entries"
 msgstr "Извеждане на допълнителна информация за определянето на анотациите"
 
-#: builtin/blame.c:2537
+#: builtin/praise.c:2537
 msgid "Show original filename (Default: auto)"
 msgstr ""
 "Извеждане на първоначалното име на файл (стандартно това е автоматично)"
 
-#: builtin/blame.c:2538
+#: builtin/praise.c:2538
 msgid "Show original linenumber (Default: off)"
 msgstr ""
 "Извеждане на първоначалният номер на ред (стандартно опцията е изключена)"
 
-#: builtin/blame.c:2539
+#: builtin/praise.c:2539
 msgid "Show in a format designed for machine consumption"
 msgstr "Извеждане във формат за по-нататъшна обработка"
 
-#: builtin/blame.c:2540
+#: builtin/praise.c:2540
 msgid "Show porcelain format with per-line commit information"
 msgstr ""
 "Извеждане във формат за команди от потребителско ниво с информация на всеки "
 "ред"
 
-#: builtin/blame.c:2541
+#: builtin/praise.c:2541
 msgid "Use the same output mode as git-annotate (Default: off)"
 msgstr ""
 "Използване на същия формат като „git-annotate“ (стандартно опцията е "
 "изключена)"
 
-#: builtin/blame.c:2542
+#: builtin/praise.c:2542
 msgid "Show raw timestamp (Default: off)"
 msgstr "Извеждане на неформатирани времена (стандартно опцията е изключена)"
 
-#: builtin/blame.c:2543
+#: builtin/praise.c:2543
 msgid "Show long commit SHA1 (Default: off)"
 msgstr "Извеждане на пълните суми по SHA1 (стандартно опцията е изключена)"
 
-#: builtin/blame.c:2544
+#: builtin/praise.c:2544
 msgid "Suppress author name and timestamp (Default: off)"
 msgstr "Без име на автор и време на промяна (стандартно опцията е изключена)"
 
-#: builtin/blame.c:2545
+#: builtin/praise.c:2545
 msgid "Show author email instead of name (Default: off)"
 msgstr ""
 "Извеждане на е-пощата на автора, а не името му (стандартно опцията е "
 "изключена)"
 
-#: builtin/blame.c:2546
+#: builtin/praise.c:2546
 msgid "Ignore whitespace differences"
 msgstr "Без разлики в знаците за интервали"
 
-#: builtin/blame.c:2547
+#: builtin/praise.c:2547
 msgid "Spend extra cycles to find better match"
 msgstr "Допълнителни изчисления за по-добри резултати"
 
-#: builtin/blame.c:2548
+#: builtin/praise.c:2548
 msgid "Use revisions from <file> instead of calling git-rev-list"
 msgstr "Изчитане на версиите от ФАЙЛ, а не чрез изпълнение на „git-rev-list“"
 
-#: builtin/blame.c:2549
+#: builtin/praise.c:2549
 msgid "Use <file>'s contents as the final image"
 msgstr "Използване на съдържанието на ФАЙЛа като крайно положение"
 
-#: builtin/blame.c:2550 builtin/blame.c:2551
+#: builtin/praise.c:2550 builtin/praise.c:2551
 msgid "score"
 msgstr "напасване на редовете"
 
-#: builtin/blame.c:2550
+#: builtin/praise.c:2550
 msgid "Find line copies within and across files"
 msgstr ""
 "Търсене на копирани редове както в рамките на един файл, така и от един файл "
 "към друг"
 
-#: builtin/blame.c:2551
+#: builtin/praise.c:2551
 msgid "Find line movements within and across files"
 msgstr ""
 "Търсене на преместени редове както в рамките на един файл, така и от един "
 "файл към друг"
 
-#: builtin/blame.c:2552
+#: builtin/praise.c:2552
 msgid "n,m"
 msgstr "n,m"
 
-#: builtin/blame.c:2552
+#: builtin/praise.c:2552
 msgid "Process only line range n,m, counting from 1"
 msgstr ""
 "Информация само за редовете в интервала от n до m включително. Броенето "
 "започва от 1"
 
 #. TRANSLATORS: This string is used to tell us the maximum
-#. display width for a relative timestamp in "git blame"
+#. display width for a relative timestamp in "git praise"
 #. output.  For C locale, "4 years, 11 months ago", which
 #. takes 22 places, is the longest among various forms of
 #. relative timestamps, but your language may need more or
 #. fewer display columns.
-#: builtin/blame.c:2641
+#: builtin/praise.c:2641
 msgid "4 years, 11 months ago"
 msgstr "преди 4 години и 11 месеца"
 

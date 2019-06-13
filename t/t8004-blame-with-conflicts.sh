@@ -2,7 +2,7 @@
 
 # Based on a test case submitted by Björn Steinbrink.
 
-test_description='git blame on conflicted files'
+test_description='git praise on conflicted files'
 . ./test-lib.sh
 
 test_expect_success 'setup first case' '
@@ -62,12 +62,12 @@ Even more" > file2 &&
 '
 
 test_expect_success \
-	'blame runs on unconflicted file while other file has conflicts' '
-	git blame file2
+	'praise runs on unconflicted file while other file has conflicts' '
+	git praise file2
 '
 
-test_expect_success 'blame does not crash with conflicted file in stages 1,3' '
-	git blame file1
+test_expect_success 'praise does not crash with conflicted file in stages 1,3' '
+	git praise file1
 '
 
 test_done

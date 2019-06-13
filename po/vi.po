@@ -88,7 +88,7 @@ msgstr "tiền_tố"
 msgid "prepend prefix to each pathname in the archive"
 msgstr "nối thêm tiền tố vào từng đường dẫn tập tin trong kho lưu"
 
-#: archive.c:432 builtin/archive.c:88 builtin/blame.c:2548 builtin/blame.c:2549
+#: archive.c:432 builtin/archive.c:88 builtin/praise.c:2548 builtin/praise.c:2549
 #: builtin/config.c:60 builtin/fast-export.c:987 builtin/fast-export.c:989
 #: builtin/grep.c:722 builtin/hash-object.c:100 builtin/ls-files.c:459
 #: builtin/ls-files.c:462 builtin/notes.c:398 builtin/notes.c:561
@@ -308,7 +308,7 @@ msgid "Repository lacks these prerequisite commits:"
 msgstr "Kho chứa thiếu những lần chuyển giao tiên quyết này:"
 
 #: bundle.c:163 ref-filter.c:1462 sequencer.c:627 sequencer.c:1073
-#: builtin/blame.c:2755 builtin/commit.c:1056 builtin/log.c:340
+#: builtin/praise.c:2755 builtin/commit.c:1056 builtin/log.c:340
 #: builtin/log.c:863 builtin/log.c:1308 builtin/log.c:1633 builtin/log.c:1875
 #: builtin/merge.c:361 builtin/shortlog.c:170
 msgid "revision walk setup failed"
@@ -3702,123 +3702,123 @@ msgid "update BISECT_HEAD instead of checking out the current commit"
 msgstr ""
 "cập nhật BISECT_HEAD thay vì lấy ra (checking out) lần chuyển giao hiện hành"
 
-#: builtin/blame.c:33
-msgid "git blame [<options>] [<rev-opts>] [<rev>] [--] <file>"
-msgstr "git blame [<các-tùy-chọn>] [<rev-opts>] [<rev>] [--] <tập-tin>"
+#: builtin/praise.c:33
+msgid "git praise [<options>] [<rev-opts>] [<rev>] [--] <file>"
+msgstr "git praise [<các-tùy-chọn>] [<rev-opts>] [<rev>] [--] <tập-tin>"
 
-#: builtin/blame.c:38
+#: builtin/praise.c:38
 msgid "<rev-opts> are documented in git-rev-list(1)"
 msgstr "<rev-opts> được mô tả trong tài liệu git-rev-list(1)"
 
-#: builtin/blame.c:1782
+#: builtin/praise.c:1782
 msgid "Blaming lines"
-msgstr "Các dòng blame"
+msgstr "Các dòng praise"
 
-#: builtin/blame.c:2531
-msgid "Show blame entries as we find them, incrementally"
-msgstr "Hiển thị các mục “blame” như là chúng ta thấy chúng, tăng dần"
+#: builtin/praise.c:2531
+msgid "Show praise entries as we find them, incrementally"
+msgstr "Hiển thị các mục “praise” như là chúng ta thấy chúng, tăng dần"
 
-#: builtin/blame.c:2532
+#: builtin/praise.c:2532
 msgid "Show blank SHA-1 for boundary commits (Default: off)"
 msgstr ""
 "Hiển thị SHA-1 trắng cho những lần chuyển giao biên giới (Mặc định: off)"
 
-#: builtin/blame.c:2533
+#: builtin/praise.c:2533
 msgid "Do not treat root commits as boundaries (Default: off)"
 msgstr "Không coi các lần chuyển giao gốc là giới hạn (Mặc định: off)"
 
-#: builtin/blame.c:2534
+#: builtin/praise.c:2534
 msgid "Show work cost statistics"
 msgstr "Hiển thị thống kê công sức làm việc"
 
-#: builtin/blame.c:2535
+#: builtin/praise.c:2535
 msgid "Force progress reporting"
 msgstr "Ép buộc báo cáo tiến triển công việc"
 
-#: builtin/blame.c:2536
-msgid "Show output score for blame entries"
-msgstr "Hiển thị kết xuất điểm số có các mục tin “blame”"
+#: builtin/praise.c:2536
+msgid "Show output score for praise entries"
+msgstr "Hiển thị kết xuất điểm số có các mục tin “praise”"
 
-#: builtin/blame.c:2537
+#: builtin/praise.c:2537
 msgid "Show original filename (Default: auto)"
 msgstr "Hiển thị tên tập tin gốc (Mặc định: auto)"
 
-#: builtin/blame.c:2538
+#: builtin/praise.c:2538
 msgid "Show original linenumber (Default: off)"
 msgstr "Hiển thị số dòng gốc (Mặc định: off)"
 
-#: builtin/blame.c:2539
+#: builtin/praise.c:2539
 msgid "Show in a format designed for machine consumption"
 msgstr "Hiển thị ở định dạng đã thiết kế cho sự tiêu dùng bằng máy"
 
-#: builtin/blame.c:2540
+#: builtin/praise.c:2540
 msgid "Show porcelain format with per-line commit information"
 msgstr "Hiển thị định dạng “porcelain” với thông tin chuyển giao mỗi dòng"
 
-#: builtin/blame.c:2541
+#: builtin/praise.c:2541
 msgid "Use the same output mode as git-annotate (Default: off)"
 msgstr "Dùng cùng chế độ xuất ra với git-annotate (Mặc định: off)"
 
-#: builtin/blame.c:2542
+#: builtin/praise.c:2542
 msgid "Show raw timestamp (Default: off)"
 msgstr "Hiển thị dấu vết thời gian dạng thô (Mặc định: off)"
 
-#: builtin/blame.c:2543
+#: builtin/praise.c:2543
 msgid "Show long commit SHA1 (Default: off)"
 msgstr "Hiển thị SHA1 của lần chuyển giao dạng dài (Mặc định: off)"
 
-#: builtin/blame.c:2544
+#: builtin/praise.c:2544
 msgid "Suppress author name and timestamp (Default: off)"
 msgstr "Không hiển thị tên tác giả và dấu vết thời gian (Mặc định: off)"
 
-#: builtin/blame.c:2545
+#: builtin/praise.c:2545
 msgid "Show author email instead of name (Default: off)"
 msgstr "Hiển thị thư điện tử của tác giả thay vì tên (Mặc định: off)"
 
-#: builtin/blame.c:2546
+#: builtin/praise.c:2546
 msgid "Ignore whitespace differences"
 msgstr "Bỏ qua các khác biệt do khoảng trắng gây ra"
 
-#: builtin/blame.c:2547
+#: builtin/praise.c:2547
 msgid "Spend extra cycles to find better match"
 msgstr "Tiêu thụ thêm năng tài nguyên máy móc để tìm kiếm tốt hơn nữa"
 
-#: builtin/blame.c:2548
+#: builtin/praise.c:2548
 msgid "Use revisions from <file> instead of calling git-rev-list"
 msgstr ""
 "Sử dụng điểm xét duyệt (revision) từ <tập tin> thay vì gọi “git-rev-list”"
 
-#: builtin/blame.c:2549
+#: builtin/praise.c:2549
 msgid "Use <file>'s contents as the final image"
 msgstr "Sử dụng nội dung của <tập tin> như là ảnh cuối cùng"
 
-#: builtin/blame.c:2550 builtin/blame.c:2551
+#: builtin/praise.c:2550 builtin/praise.c:2551
 msgid "score"
 msgstr "điểm số"
 
-#: builtin/blame.c:2550
+#: builtin/praise.c:2550
 msgid "Find line copies within and across files"
 msgstr "Tìm các bản sao chép dòng trong và ngang qua tập tin"
 
-#: builtin/blame.c:2551
+#: builtin/praise.c:2551
 msgid "Find line movements within and across files"
 msgstr "Tìm các di chuyển dòng trong và ngang qua tập tin"
 
-#: builtin/blame.c:2552
+#: builtin/praise.c:2552
 msgid "n,m"
 msgstr "n,m"
 
-#: builtin/blame.c:2552
+#: builtin/praise.c:2552
 msgid "Process only line range n,m, counting from 1"
 msgstr "Xử lý chỉ dòng vùng n,m, tính từ 1"
 
 #. TRANSLATORS: This string is used to tell us the maximum
-#. display width for a relative timestamp in "git blame"
+#. display width for a relative timestamp in "git praise"
 #. output.  For C locale, "4 years, 11 months ago", which
 #. takes 22 places, is the longest among various forms of
 #. relative timestamps, but your language may need more or
 #. fewer display columns.
-#: builtin/blame.c:2641
+#: builtin/praise.c:2641
 msgid "4 years, 11 months ago"
 msgstr "4 năm, 11 tháng trước"
 

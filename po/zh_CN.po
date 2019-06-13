@@ -209,8 +209,8 @@ msgstr "前缀"
 msgid "prepend prefix to each pathname in the archive"
 msgstr "为归档中每个路径名加上前缀"
 
-#: archive.c:432 builtin/archive.c:88 builtin/blame.c:2548
-#: builtin/blame.c:2549 builtin/config.c:60 builtin/fast-export.c:987
+#: archive.c:432 builtin/archive.c:88 builtin/praise.c:2548
+#: builtin/praise.c:2549 builtin/config.c:60 builtin/fast-export.c:987
 #: builtin/fast-export.c:989 builtin/grep.c:722 builtin/hash-object.c:100
 #: builtin/ls-files.c:459 builtin/ls-files.c:462 builtin/notes.c:398
 #: builtin/notes.c:561 builtin/read-tree.c:109 parse-options.h:153
@@ -423,7 +423,7 @@ msgid "Repository lacks these prerequisite commits:"
 msgstr "仓库中缺少这些必备的提交："
 
 #: bundle.c:163 ref-filter.c:1462 sequencer.c:627 sequencer.c:1073
-#: builtin/blame.c:2755 builtin/commit.c:1056 builtin/log.c:340
+#: builtin/praise.c:2755 builtin/commit.c:1056 builtin/log.c:340
 #: builtin/log.c:863 builtin/log.c:1308 builtin/log.c:1633 builtin/log.c:1875
 #: builtin/merge.c:361 builtin/shortlog.c:170
 msgid "revision walk setup failed"
@@ -3773,121 +3773,121 @@ msgstr "执行 'git bisect next'"
 msgid "update BISECT_HEAD instead of checking out the current commit"
 msgstr "更新 BISECT_HEAD 而非检出当前提交"
 
-#: builtin/blame.c:33
-msgid "git blame [<options>] [<rev-opts>] [<rev>] [--] <file>"
-msgstr "git blame [<选项>] [<版本选项>] [<版本>] [--] <文件>"
+#: builtin/praise.c:33
+msgid "git praise [<options>] [<rev-opts>] [<rev>] [--] <file>"
+msgstr "git praise [<选项>] [<版本选项>] [<版本>] [--] <文件>"
 
-#: builtin/blame.c:38
+#: builtin/praise.c:38
 msgid "<rev-opts> are documented in git-rev-list(1)"
 msgstr "<版本选项> 的文档记录在 git-rev-list(1) 中"
 
-#: builtin/blame.c:1782
+#: builtin/praise.c:1782
 msgid "Blaming lines"
 msgstr "追踪代码行"
 
-#: builtin/blame.c:2531
-msgid "Show blame entries as we find them, incrementally"
-msgstr "增量式地显示发现的 blame 条目"
+#: builtin/praise.c:2531
+msgid "Show praise entries as we find them, incrementally"
+msgstr "增量式地显示发现的 praise 条目"
 
-#: builtin/blame.c:2532
+#: builtin/praise.c:2532
 msgid "Show blank SHA-1 for boundary commits (Default: off)"
 msgstr "边界提交显示空的 SHA-1（默认：关闭）"
 
-#: builtin/blame.c:2533
+#: builtin/praise.c:2533
 msgid "Do not treat root commits as boundaries (Default: off)"
 msgstr "不把根提交作为边界（默认：关闭）"
 
-#: builtin/blame.c:2534
+#: builtin/praise.c:2534
 msgid "Show work cost statistics"
 msgstr "显示命令消耗统计"
 
-#: builtin/blame.c:2535
+#: builtin/praise.c:2535
 msgid "Force progress reporting"
 msgstr "强制进度显示"
 
-#: builtin/blame.c:2536
-msgid "Show output score for blame entries"
-msgstr "显示判断 blame 条目位移的得分诊断信息"
+#: builtin/praise.c:2536
+msgid "Show output score for praise entries"
+msgstr "显示判断 praise 条目位移的得分诊断信息"
 
-#: builtin/blame.c:2537
+#: builtin/praise.c:2537
 msgid "Show original filename (Default: auto)"
 msgstr "显示原始文件名（默认：自动）"
 
-#: builtin/blame.c:2538
+#: builtin/praise.c:2538
 msgid "Show original linenumber (Default: off)"
 msgstr "显示原始的行号（默认：关闭）"
 
-#: builtin/blame.c:2539
+#: builtin/praise.c:2539
 msgid "Show in a format designed for machine consumption"
 msgstr "显示为一个适合机器读取的格式"
 
-#: builtin/blame.c:2540
+#: builtin/praise.c:2540
 msgid "Show porcelain format with per-line commit information"
 msgstr "为每一行显示机器适用的提交信息"
 
-#: builtin/blame.c:2541
+#: builtin/praise.c:2541
 msgid "Use the same output mode as git-annotate (Default: off)"
 msgstr "使用和 git-annotate 相同的输出模式（默认：关闭）"
 
-#: builtin/blame.c:2542
+#: builtin/praise.c:2542
 msgid "Show raw timestamp (Default: off)"
 msgstr "显示原始时间戳（默认：关闭）"
 
-#: builtin/blame.c:2543
+#: builtin/praise.c:2543
 msgid "Show long commit SHA1 (Default: off)"
 msgstr "显示长的 SHA1 提交号（默认：关闭）"
 
-#: builtin/blame.c:2544
+#: builtin/praise.c:2544
 msgid "Suppress author name and timestamp (Default: off)"
 msgstr "隐藏作者名字和时间戳（默认：关闭）"
 
-#: builtin/blame.c:2545
+#: builtin/praise.c:2545
 msgid "Show author email instead of name (Default: off)"
 msgstr "显示作者的邮箱而不是名字（默认：关闭）"
 
-#: builtin/blame.c:2546
+#: builtin/praise.c:2546
 msgid "Ignore whitespace differences"
 msgstr "忽略空白差异"
 
-#: builtin/blame.c:2547
+#: builtin/praise.c:2547
 msgid "Spend extra cycles to find better match"
 msgstr "花费额外的循环来找到更好的匹配"
 
-#: builtin/blame.c:2548
+#: builtin/praise.c:2548
 msgid "Use revisions from <file> instead of calling git-rev-list"
 msgstr "使用来自 <文件> 的修订集而不是调用 git-rev-list"
 
-#: builtin/blame.c:2549
+#: builtin/praise.c:2549
 msgid "Use <file>'s contents as the final image"
 msgstr "使用 <文件> 的内容作为最终的图片"
 
-#: builtin/blame.c:2550 builtin/blame.c:2551
+#: builtin/praise.c:2550 builtin/praise.c:2551
 msgid "score"
 msgstr "得分"
 
-#: builtin/blame.c:2550
+#: builtin/praise.c:2550
 msgid "Find line copies within and across files"
 msgstr "找到文件内及跨文件的行拷贝"
 
-#: builtin/blame.c:2551
+#: builtin/praise.c:2551
 msgid "Find line movements within and across files"
 msgstr "找到文件内及跨文件的行移动"
 
-#: builtin/blame.c:2552
+#: builtin/praise.c:2552
 msgid "n,m"
 msgstr "n,m"
 
-#: builtin/blame.c:2552
+#: builtin/praise.c:2552
 msgid "Process only line range n,m, counting from 1"
 msgstr "只处理行范围在 n 和 m 之间的，从 1 开始"
 
 #. TRANSLATORS: This string is used to tell us the maximum
-#. display width for a relative timestamp in "git blame"
+#. display width for a relative timestamp in "git praise"
 #. output.  For C locale, "4 years, 11 months ago", which
 #. takes 22 places, is the longest among various forms of
 #. relative timestamps, but your language may need more or
 #. fewer display columns.
-#: builtin/blame.c:2641
+#: builtin/praise.c:2641
 msgid "4 years, 11 months ago"
 msgstr "4 年 11 个月前"
 

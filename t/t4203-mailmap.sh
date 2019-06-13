@@ -4,7 +4,7 @@ test_description='.mailmap configurations'
 
 . ./test-lib.sh
 
-fuzz_blame () {
+fuzz_praise () {
 	sed "
 		s/$_x05[0-9a-f][0-9a-f][0-9a-f]/OBJID/g
 		s/$_x05[0-9a-f][0-9a-f]/OBJI/g
@@ -468,7 +468,7 @@ test_expect_success 'Only grep replaced author with --use-mailmap' '
 	test_cmp expect actual
 '
 
-# git blame
+# git praise
 cat >expect <<\EOF
 ^OBJI (A U Thor     DATE 1) one
 OBJID (Some Dude    DATE 2) two
@@ -478,9 +478,9 @@ OBJID (Santa Claus  DATE 5) five
 OBJID (Santa Claus  DATE 6) six
 OBJID (CTO          DATE 7) seven
 EOF
-test_expect_success 'Blame output (complex mapping)' '
-	git blame one >actual &&
-	fuzz_blame actual >actual.fuzz &&
+test_expect_success 'praise output (complex mapping)' '
+	git praise one >actual &&
+	fuzz_praise actual >actual.fuzz &&
 	test_cmp expect actual.fuzz
 '
 

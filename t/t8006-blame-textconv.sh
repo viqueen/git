@@ -1,9 +1,9 @@
 #!/bin/sh
 
-test_description='git blame textconv support'
+test_description='git praise textconv support'
 . ./test-lib.sh
 
-find_blame() {
+find_praise() {
 	sed -e 's/^[^(]*//'
 }
 
@@ -33,8 +33,8 @@ cat >expected <<EOF
 EOF
 
 test_expect_success 'no filter specified' '
-	git blame one.bin >blame &&
-	find_blame Number2 <blame >result &&
+	git praise one.bin >praise &&
+	find_praise Number2 <praise >result &&
 	test_cmp expected result
 '
 
@@ -45,9 +45,9 @@ test_expect_success 'setup textconv filters' '
 	git config diff.test.cachetextconv false
 '
 
-test_expect_success 'blame with --no-textconv' '
-	git blame --no-textconv one.bin >blame &&
-	find_blame <blame> result &&
+test_expect_success 'praise with --no-textconv' '
+	git praise --no-textconv one.bin >praise &&
+	find_praise <praise> result &&
 	test_cmp expected result
 '
 
@@ -55,9 +55,9 @@ cat >expected <<EOF
 (Number2 2010-01-01 20:00:00 +0000 1) converted: test 1 version 2
 EOF
 
-test_expect_success 'basic blame on last commit' '
-	git blame one.bin >blame &&
-	find_blame  <blame >result &&
+test_expect_success 'basic praise on last commit' '
+	git praise one.bin >praise &&
+	find_praise  <praise >result &&
 	test_cmp expected result
 '
 
@@ -66,19 +66,19 @@ cat >expected <<EOF
 (Number2 2010-01-01 20:00:00 +0000 2) converted: test number 2 version 2
 EOF
 
-test_expect_success 'blame --textconv going through revisions' '
-	git blame --textconv two.bin >blame &&
-	find_blame <blame >result &&
+test_expect_success 'praise --textconv going through revisions' '
+	git praise --textconv two.bin >praise &&
+	find_praise <praise >result &&
 	test_cmp expected result
 '
 
-test_expect_success 'blame --textconv with local changes' '
+test_expect_success 'praise --textconv with local changes' '
 	test_when_finished "git checkout zero.bin" &&
 	printf "bin: updated number 0\015" >zero.bin &&
-	git blame --textconv zero.bin >blame &&
+	git praise --textconv zero.bin >praise &&
 	expect="(Not Committed Yet ....-..-.. ..:..:.. +0000 1)" &&
 	expect="$expect converted: updated number 0" &&
-	expr "$(find_blame <blame)" : "^$expect"
+	expr "$(find_praise <praise)" : "^$expect"
 '
 
 test_expect_success 'setup +cachetextconv' '
@@ -89,12 +89,12 @@ cat >expected_one <<EOF
 (Number2 2010-01-01 20:00:00 +0000 1) converted: test 1 version 2
 EOF
 
-test_expect_success 'blame --textconv works with textconvcache' '
-	git blame --textconv two.bin >blame &&
-	find_blame <blame >result &&
+test_expect_success 'praise --textconv works with textconvcache' '
+	git praise --textconv two.bin >praise &&
+	find_praise <praise >result &&
 	test_cmp expected result &&
-	git blame --textconv one.bin >blame &&
-	find_blame  <blame >result &&
+	git praise --textconv one.bin >praise &&
+	find_praise  <praise >result &&
 	test_cmp expected_one result
 '
 
@@ -107,9 +107,9 @@ test_expect_success 'make a new commit' '
 	GIT_AUTHOR_NAME=Number3 git commit -a -m Third --date="2010-01-01 22:00:00"
 '
 
-test_expect_success 'blame from previous revision' '
-	git blame HEAD^ two.bin >blame &&
-	find_blame <blame >result &&
+test_expect_success 'praise from previous revision' '
+	git praise HEAD^ two.bin >praise &&
+	find_praise <praise >result &&
 	test_cmp expected result
 '
 
@@ -117,20 +117,20 @@ cat >expected <<EOF
 (Number2 2010-01-01 20:00:00 +0000 1) two.bin
 EOF
 
-test_expect_success SYMLINKS 'blame with --no-textconv (on symlink)' '
-	git blame --no-textconv symlink.bin >blame &&
-	find_blame <blame >result &&
+test_expect_success SYMLINKS 'praise with --no-textconv (on symlink)' '
+	git praise --no-textconv symlink.bin >praise &&
+	find_praise <praise >result &&
 	test_cmp expected result
 '
 
-test_expect_success SYMLINKS 'blame --textconv (on symlink)' '
-	git blame --textconv symlink.bin >blame &&
-	find_blame <blame >result &&
+test_expect_success SYMLINKS 'praise --textconv (on symlink)' '
+	git praise --textconv symlink.bin >praise &&
+	find_praise <praise >result &&
 	test_cmp expected result
 '
 
 # cp two.bin three.bin  and make small tweak
-# (this will direct blame -C -C three.bin to consider two.bin and symlink.bin)
+# (this will direct praise -C -C three.bin to consider two.bin and symlink.bin)
 test_expect_success 'make another new commit' '
 	cat >three.bin <<\EOF &&
 bin: test number 2
@@ -142,9 +142,9 @@ EOF
 	GIT_AUTHOR_NAME=Number4 git commit -a -m Fourth --date="2010-01-01 23:00:00"
 '
 
-test_expect_success 'blame on last commit (-C -C, symlink)' '
-	git blame -C -C three.bin >blame &&
-	find_blame <blame >result &&
+test_expect_success 'praise on last commit (-C -C, symlink)' '
+	git praise -C -C three.bin >praise &&
+	find_praise <praise >result &&
 	cat >expected <<\EOF &&
 (Number1 2010-01-01 18:00:00 +0000 1) converted: test number 2
 (Number2 2010-01-01 20:00:00 +0000 2) converted: test number 2 version 2

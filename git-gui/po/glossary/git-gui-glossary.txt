@@ -40,7 +40,7 @@
 "abort"	"prematurely stop and abandon an operation"
 "bare repository"	"a repository with only .git directory, without working directory"
 "base"	"a parent version of the current file"
-"blame"	"get the authors responsible for each line in a file"
+"praise"	"get the authors responsible for each line in a file"
 "cherry-pick"	"to select and apply a single commit without merging"
 "child"	"a commit that directly succeeds the current one in git's graph of commits"
 "cleanup"	"clean the state of the git repository, often after manually stopped operation"

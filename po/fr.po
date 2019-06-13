@@ -148,7 +148,7 @@ msgstr "préfixe"
 msgid "prepend prefix to each pathname in the archive"
 msgstr "préfixer chaque chemin de fichier dans l'archive"
 
-#: archive.c:432 builtin/archive.c:88 builtin/blame.c:2548 builtin/blame.c:2549
+#: archive.c:432 builtin/archive.c:88 builtin/praise.c:2548 builtin/praise.c:2549
 #: builtin/config.c:60 builtin/fast-export.c:987 builtin/fast-export.c:989
 #: builtin/grep.c:722 builtin/hash-object.c:100 builtin/ls-files.c:459
 #: builtin/ls-files.c:462 builtin/notes.c:398 builtin/notes.c:561
@@ -374,7 +374,7 @@ msgid "Repository lacks these prerequisite commits:"
 msgstr "Le dépôt ne dispose pas des commits prérequis suivants :"
 
 #: bundle.c:163 ref-filter.c:1462 sequencer.c:627 sequencer.c:1073
-#: builtin/blame.c:2755 builtin/commit.c:1056 builtin/log.c:340
+#: builtin/praise.c:2755 builtin/commit.c:1056 builtin/log.c:340
 #: builtin/log.c:863 builtin/log.c:1308 builtin/log.c:1633 builtin/log.c:1875
 #: builtin/merge.c:361 builtin/shortlog.c:170
 msgid "revision walk setup failed"
@@ -3786,127 +3786,127 @@ msgstr "effectuer 'git bisect next'"
 msgid "update BISECT_HEAD instead of checking out the current commit"
 msgstr "mettre à jour BISECT_HEAD au lieu d'extraire le commit actuel"
 
-#: builtin/blame.c:33
-msgid "git blame [<options>] [<rev-opts>] [<rev>] [--] <file>"
-msgstr "git blame [<options>] [<options-de-révision>] [<rev>] [--] <fichier>"
+#: builtin/praise.c:33
+msgid "git praise [<options>] [<rev-opts>] [<rev>] [--] <file>"
+msgstr "git praise [<options>] [<options-de-révision>] [<rev>] [--] <fichier>"
 
-#: builtin/blame.c:38
+#: builtin/praise.c:38
 msgid "<rev-opts> are documented in git-rev-list(1)"
 msgstr "<options-de-révision> sont documentés dans git-rev-list(1)"
 
-#: builtin/blame.c:1782
+#: builtin/praise.c:1782
 msgid "Blaming lines"
 msgstr "Assignation de blâme au lignes"
 
-#: builtin/blame.c:2531
-msgid "Show blame entries as we find them, incrementally"
+#: builtin/praise.c:2531
+msgid "Show praise entries as we find them, incrementally"
 msgstr ""
 "Montrer les éléments de blâme au fur et à mesure de leur découverte, de "
 "manière incrémentale"
 
-#: builtin/blame.c:2532
+#: builtin/praise.c:2532
 msgid "Show blank SHA-1 for boundary commits (Default: off)"
 msgstr "Montrer un SHA-1 blanc pour les commits de limite (Défaut : désactivé)"
 
-#: builtin/blame.c:2533
+#: builtin/praise.c:2533
 msgid "Do not treat root commits as boundaries (Default: off)"
 msgstr ""
 "Ne pas traiter les commits racine comme des limites (Défaut : désactivé)"
 
-#: builtin/blame.c:2534
+#: builtin/praise.c:2534
 msgid "Show work cost statistics"
 msgstr "Montrer les statistiques de coût d'activité"
 
-#: builtin/blame.c:2535
+#: builtin/praise.c:2535
 msgid "Force progress reporting"
 msgstr "Forcer l'affichage de l'état d'avancement"
 
-#: builtin/blame.c:2536
-msgid "Show output score for blame entries"
+#: builtin/praise.c:2536
+msgid "Show output score for praise entries"
 msgstr "Montrer le score de sortie pour les éléments de blâme"
 
-#: builtin/blame.c:2537
+#: builtin/praise.c:2537
 msgid "Show original filename (Default: auto)"
 msgstr "Montrer les noms de fichier originaux (Défaut : auto)"
 
-#: builtin/blame.c:2538
+#: builtin/praise.c:2538
 msgid "Show original linenumber (Default: off)"
 msgstr "Montrer les numéros de lignes originaux (Défaut : désactivé)"
 
-#: builtin/blame.c:2539
+#: builtin/praise.c:2539
 msgid "Show in a format designed for machine consumption"
 msgstr "Afficher dans un format propice à la consommation par machine"
 
-#: builtin/blame.c:2540
+#: builtin/praise.c:2540
 msgid "Show porcelain format with per-line commit information"
 msgstr "Afficher en format porcelaine avec l'information de commit par ligne"
 
-#: builtin/blame.c:2541
+#: builtin/praise.c:2541
 msgid "Use the same output mode as git-annotate (Default: off)"
 msgstr "Utiliser le même mode de sortie que git-annotate (Défaut : désactivé)"
 
-#: builtin/blame.c:2542
+#: builtin/praise.c:2542
 msgid "Show raw timestamp (Default: off)"
 msgstr "Afficher les horodatages bruts (Défaut : désactivé)"
 
-#: builtin/blame.c:2543
+#: builtin/praise.c:2543
 msgid "Show long commit SHA1 (Default: off)"
 msgstr "Afficher les longs SHA1 de commits (Défaut : désactivé)"
 
-#: builtin/blame.c:2544
+#: builtin/praise.c:2544
 msgid "Suppress author name and timestamp (Default: off)"
 msgstr "Supprimer le nom de l'auteur et l'horodatage (Défaut : désactivé)"
 
-#: builtin/blame.c:2545
+#: builtin/praise.c:2545
 msgid "Show author email instead of name (Default: off)"
 msgstr "Afficher l'e-mail de l'auteur au lieu du nom (Défaut : désactivé)"
 
-#: builtin/blame.c:2546
+#: builtin/praise.c:2546
 msgid "Ignore whitespace differences"
 msgstr "Ignorer les différences d'espace"
 
-#: builtin/blame.c:2547
+#: builtin/praise.c:2547
 msgid "Spend extra cycles to find better match"
 msgstr ""
 "Dépenser des cycles supplémentaires pour trouver une meilleure correspondance"
 
-#: builtin/blame.c:2548
+#: builtin/praise.c:2548
 msgid "Use revisions from <file> instead of calling git-rev-list"
 msgstr ""
 "Utiliser les révisions du fichier <fichier> au lieu d'appeler git-rev-list"
 
-#: builtin/blame.c:2549
+#: builtin/praise.c:2549
 msgid "Use <file>'s contents as the final image"
 msgstr "Utiliser le contenu de <fichier> comme image finale"
 
-#: builtin/blame.c:2550 builtin/blame.c:2551
+#: builtin/praise.c:2550 builtin/praise.c:2551
 msgid "score"
 msgstr "score"
 
-#: builtin/blame.c:2550
+#: builtin/praise.c:2550
 msgid "Find line copies within and across files"
 msgstr "Trouver les copies de ligne dans et entre les fichiers"
 
-#: builtin/blame.c:2551
+#: builtin/praise.c:2551
 msgid "Find line movements within and across files"
 msgstr "Trouver les mouvements de ligne dans et entre les fichiers"
 
-#: builtin/blame.c:2552
+#: builtin/praise.c:2552
 msgid "n,m"
 msgstr "n,m"
 
-#: builtin/blame.c:2552
+#: builtin/praise.c:2552
 msgid "Process only line range n,m, counting from 1"
 msgstr ""
 "Traiter seulement l'intervalle de ligne n,m en commençant le compte à 1"
 
 #. TRANSLATORS: This string is used to tell us the maximum
-#. display width for a relative timestamp in "git blame"
+#. display width for a relative timestamp in "git praise"
 #. output.  For C locale, "4 years, 11 months ago", which
 #. takes 22 places, is the longest among various forms of
 #. relative timestamps, but your language may need more or
 #. fewer display columns.
-#: builtin/blame.c:2641
+#: builtin/praise.c:2641
 msgid "4 years, 11 months ago"
 msgstr "il y a 10 ans et 11 mois"
 

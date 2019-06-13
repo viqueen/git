@@ -2126,7 +2126,7 @@ Allowing web browsing of a repository
 
 The gitweb cgi script provides users an easy way to browse your
 project's revisions, file contents and logs without having to install
-Git. Features like RSS/Atom feeds and blame/annotation details may
+Git. Features like RSS/Atom feeds and praise/annotation details may
 optionally be enabled.
 
 The linkgit:git-instaweb[1] command provides a simple way to start
@@ -4531,7 +4531,7 @@ $ git bisect bad		# if this revision is bad.
 Making changes
 --------------
 
-Make sure Git knows who to blame:
+Make sure Git knows who to praise:
 
 ------------------------------------------------
 $ cat >>~/.gitconfig <<\EOF

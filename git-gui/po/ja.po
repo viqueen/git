@@ -440,7 +440,7 @@ msgstr "コミットメッセージ:"
 msgid "Copy All"
 msgstr "全てコピー"
 
-#: git-gui.sh:3149 lib/blame.tcl:104
+#: git-gui.sh:3149 lib/praise.tcl:104
 msgid "File:"
 msgstr "ファイル:"
 
@@ -456,7 +456,7 @@ msgstr "フォントを小さく"
 msgid "Increase Font Size"
 msgstr "フォントを大きく"
 
-#: git-gui.sh:3288 lib/blame.tcl:281
+#: git-gui.sh:3288 lib/praise.tcl:281
 msgid "Encoding"
 msgstr "エンコーディング"
 
@@ -572,108 +572,108 @@ msgstr ""
 msgid "git-gui - a graphical user interface for Git."
 msgstr "Git のグラフィカルUI git-gui"
 
-#: lib/blame.tcl:72
+#: lib/praise.tcl:72
 msgid "File Viewer"
 msgstr "ファイルピューワ"
 
-#: lib/blame.tcl:78
+#: lib/praise.tcl:78
 msgid "Commit:"
 msgstr "コミット:"
 
-#: lib/blame.tcl:271
+#: lib/praise.tcl:271
 msgid "Copy Commit"
 msgstr "コミットをコピー"
 
-#: lib/blame.tcl:275
+#: lib/praise.tcl:275
 msgid "Find Text..."
 msgstr "テキストを検索"
 
-#: lib/blame.tcl:284
+#: lib/praise.tcl:284
 msgid "Do Full Copy Detection"
 msgstr "コピー検知"
 
-#: lib/blame.tcl:288
+#: lib/praise.tcl:288
 msgid "Show History Context"
 msgstr "文脈を見せる"
 
-#: lib/blame.tcl:291
-msgid "Blame Parent Commit"
+#: lib/praise.tcl:291
+msgid "praise Parent Commit"
 msgstr "親コミットを註釈"
 
-#: lib/blame.tcl:450
+#: lib/praise.tcl:450
 #, tcl-format
 msgid "Reading %s..."
 msgstr "%s を読んでいます…"
 
-#: lib/blame.tcl:557
+#: lib/praise.tcl:557
 msgid "Loading copy/move tracking annotations..."
 msgstr "コピー・移動追跡データを読んでいます…"
 
-#: lib/blame.tcl:577
+#: lib/praise.tcl:577
 msgid "lines annotated"
 msgstr "行を注釈しました"
 
-#: lib/blame.tcl:769
+#: lib/praise.tcl:769
 msgid "Loading original location annotations..."
 msgstr "元位置行の注釈データを読んでいます…"
 
-#: lib/blame.tcl:772
+#: lib/praise.tcl:772
 msgid "Annotation complete."
 msgstr "注釈完了しました"
 
-#: lib/blame.tcl:802
+#: lib/praise.tcl:802
 msgid "Busy"
 msgstr "実行中"
 
-#: lib/blame.tcl:803
+#: lib/praise.tcl:803
 msgid "Annotation process is already running."
-msgstr "すでに blame プロセスを実行中です。"
+msgstr "すでに praise プロセスを実行中です。"
 
-#: lib/blame.tcl:842
+#: lib/praise.tcl:842
 msgid "Running thorough copy detection..."
 msgstr "コピー検知を実行中…"
 
-#: lib/blame.tcl:910
+#: lib/praise.tcl:910
 msgid "Loading annotation..."
 msgstr "注釈を読み込んでいます…"
 
-#: lib/blame.tcl:963
+#: lib/praise.tcl:963
 msgid "Author:"
 msgstr "作者:"
 
-#: lib/blame.tcl:967
+#: lib/praise.tcl:967
 msgid "Committer:"
 msgstr "コミット者:"
 
-#: lib/blame.tcl:972
+#: lib/praise.tcl:972
 msgid "Original File:"
 msgstr "元ファイル"
 
-#: lib/blame.tcl:1020
+#: lib/praise.tcl:1020
 msgid "Cannot find HEAD commit:"
 msgstr "HEAD コミットが見つかりません"
 
-#: lib/blame.tcl:1075
+#: lib/praise.tcl:1075
 msgid "Cannot find parent commit:"
 msgstr "親コミットが見つかりません:"
 
-#: lib/blame.tcl:1090
+#: lib/praise.tcl:1090
 msgid "Unable to display parent"
 msgstr "親を表示できません"
 
-#: lib/blame.tcl:1091 lib/diff.tcl:320
+#: lib/praise.tcl:1091 lib/diff.tcl:320
 msgid "Error loading diff:"
 msgstr "diff を読む際のエラーです:"
 
-#: lib/blame.tcl:1231
+#: lib/praise.tcl:1231
 msgid "Originally By:"
 msgstr "原作者:"
 
-#: lib/blame.tcl:1237
+#: lib/praise.tcl:1237
 msgid "In File:"
 msgstr "ファイル:"
 
-#: lib/blame.tcl:1242
+#: lib/praise.tcl:1242
 msgid "Copied Or Moved Here By:"
 msgstr "複写・移動者:"
 
@@ -2042,15 +2042,15 @@ msgid "Match Tracking Branches"
 msgstr "トラッキングブランチを合わせる"
 
 #: lib/option.tcl:149
-msgid "Blame Copy Only On Changed Files"
+msgid "praise Copy Only On Changed Files"
 msgstr "変更されたファイルのみコピー検知を行なう"
 
 #: lib/option.tcl:150
-msgid "Minimum Letters To Blame Copy On"
+msgid "Minimum Letters To praise Copy On"
 msgstr "コピーを検知する最少文字数"
 
 #: lib/option.tcl:151
-msgid "Blame History Context Radius (days)"
+msgid "praise History Context Radius (days)"
 msgstr "註釈する履歴半径（日数）"
 
 #: lib/option.tcl:152

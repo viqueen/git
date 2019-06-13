@@ -2,7 +2,7 @@
 
 EMACS = emacs
 
-ELC = git.elc git-blame.elc
+ELC = git.elc git-praise.elc
 INSTALL ?= install
 INSTALL_ELC = $(INSTALL) -m 644
 prefix ?= $(HOME)

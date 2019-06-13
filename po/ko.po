@@ -133,7 +133,7 @@ msgstr "접두어"
 msgid "prepend prefix to each pathname in the archive"
 msgstr "아카이브의 각 경로 이름의 앞에 지정한 경로를 붙입니다"
 
-#: archive.c:432 builtin/archive.c:88 builtin/blame.c:2548 builtin/blame.c:2549
+#: archive.c:432 builtin/archive.c:88 builtin/praise.c:2548 builtin/praise.c:2549
 #: builtin/config.c:60 builtin/fast-export.c:987 builtin/fast-export.c:989
 #: builtin/grep.c:722 builtin/hash-object.c:100 builtin/ls-files.c:459
 #: builtin/ls-files.c:462 builtin/notes.c:398 builtin/notes.c:561
@@ -354,7 +354,7 @@ msgid "Repository lacks these prerequisite commits:"
 msgstr "저장소에 필수적인 다음 커밋이 없습니다:"
 
 #: bundle.c:163 ref-filter.c:1462 sequencer.c:627 sequencer.c:1073
-#: builtin/blame.c:2755 builtin/commit.c:1056 builtin/log.c:340
+#: builtin/praise.c:2755 builtin/commit.c:1056 builtin/log.c:340
 #: builtin/log.c:863 builtin/log.c:1308 builtin/log.c:1633 builtin/log.c:1875
 #: builtin/merge.c:361 builtin/shortlog.c:170
 msgid "revision walk setup failed"
@@ -3672,121 +3672,121 @@ msgstr "'git bisect next'를 수행합니다"
 msgid "update BISECT_HEAD instead of checking out the current commit"
 msgstr "현재 커밋을 가져오는 대신 BISECT_HEAD를 업데이트합니다"
 
-#: builtin/blame.c:33
-msgid "git blame [<options>] [<rev-opts>] [<rev>] [--] <file>"
-msgstr "git blame [<옵션>] [<리비전-옵션>] [<리비전>] [--] <파일>"
+#: builtin/praise.c:33
+msgid "git praise [<options>] [<rev-opts>] [<rev>] [--] <file>"
+msgstr "git praise [<옵션>] [<리비전-옵션>] [<리비전>] [--] <파일>"
 
-#: builtin/blame.c:38
+#: builtin/praise.c:38
 msgid "<rev-opts> are documented in git-rev-list(1)"
 msgstr "<리비전-옵션>은 git-rev-list(1)에 설명되어 있습니다"
 
-#: builtin/blame.c:1782
+#: builtin/praise.c:1782
 msgid "Blaming lines"
 msgstr "블레임 줄"
 
-#: builtin/blame.c:2531
-msgid "Show blame entries as we find them, incrementally"
+#: builtin/praise.c:2531
+msgid "Show praise entries as we find them, incrementally"
 msgstr "블레임 항목을 찾자마자 점진적으로 표시합니다"
 
-#: builtin/blame.c:2532
+#: builtin/praise.c:2532
 msgid "Show blank SHA-1 for boundary commits (Default: off)"
 msgstr "가장자리 커밋에 대해 빈 SHA-1을 표시합니다 (기본값: 꺼짐)"
 
-#: builtin/blame.c:2533
+#: builtin/praise.c:2533
 msgid "Do not treat root commits as boundaries (Default: off)"
 msgstr "최상위 커밋을 가장자리 커밋으로 취급하지 않습니다 (기본값: 꺼짐)"
 
-#: builtin/blame.c:2534
+#: builtin/praise.c:2534
 msgid "Show work cost statistics"
 msgstr "작업 비용 통계를 표시합니다"
 
-#: builtin/blame.c:2535
+#: builtin/praise.c:2535
 msgid "Force progress reporting"
 msgstr "강제로 진행 상황을 표시합니다"
 
-#: builtin/blame.c:2536
-msgid "Show output score for blame entries"
+#: builtin/praise.c:2536
+msgid "Show output score for praise entries"
 msgstr "블레임 항목에 대해 출력 점수를 표시합니다"
 
-#: builtin/blame.c:2537
+#: builtin/praise.c:2537
 msgid "Show original filename (Default: auto)"
 msgstr "원래 파일 이름 표시 (기본값: 자동)"
 
-#: builtin/blame.c:2538
+#: builtin/praise.c:2538
 msgid "Show original linenumber (Default: off)"
 msgstr "원래 줄 번호 표시 (기본값: 하지 않음)"
 
-#: builtin/blame.c:2539
+#: builtin/praise.c:2539
 msgid "Show in a format designed for machine consumption"
 msgstr "컴퓨터 처리용으로 설계된 형식으로 표시합니다"
 
-#: builtin/blame.c:2540
+#: builtin/praise.c:2540
 msgid "Show porcelain format with per-line commit information"
 msgstr "줄마다 커밋 정보가 표시되는 사용자용 형식으로 표시합니다"
 
-#: builtin/blame.c:2541
+#: builtin/praise.c:2541
 msgid "Use the same output mode as git-annotate (Default: off)"
 msgstr "git-annotate와 동일한 형식을 사용합니다 (기본값: 꺼짐)"
 
-#: builtin/blame.c:2542
+#: builtin/praise.c:2542
 msgid "Show raw timestamp (Default: off)"
 msgstr "내부 형식으로 시각을 표시합니다 (기본값: 꺼짐)"
 
-#: builtin/blame.c:2543
+#: builtin/praise.c:2543
 msgid "Show long commit SHA1 (Default: off)"
 msgstr "길게 커밋 SHA1을 표시합니다 (기본값: 꺼짐)"
 
-#: builtin/blame.c:2544
+#: builtin/praise.c:2544
 msgid "Suppress author name and timestamp (Default: off)"
 msgstr "작성자 이름과 시각을 표시하지 않습니다 (기본값: 꺼짐)"
 
-#: builtin/blame.c:2545
+#: builtin/praise.c:2545
 msgid "Show author email instead of name (Default: off)"
 msgstr "작성자 이름 대신에 전자메일을 표시합니다 (기본값: 꺼짐)"
 
-#: builtin/blame.c:2546
+#: builtin/praise.c:2546
 msgid "Ignore whitespace differences"
 msgstr "공백 문자 차이점을 무시합니다"
 
-#: builtin/blame.c:2547
+#: builtin/praise.c:2547
 msgid "Spend extra cycles to find better match"
 msgstr "더 일치하는 항목을 찾는데 더 시간을 소모합니다"
 
-#: builtin/blame.c:2548
+#: builtin/praise.c:2548
 msgid "Use revisions from <file> instead of calling git-rev-list"
 msgstr "git-rev-list를 호출하는 대신 <파일>에서 리비전을 사용합니다"
 
-#: builtin/blame.c:2549
+#: builtin/praise.c:2549
 msgid "Use <file>'s contents as the final image"
 msgstr "<파일>의 내용을 최종 이미지로 사용합니다"
 
-#: builtin/blame.c:2550 builtin/blame.c:2551
+#: builtin/praise.c:2550 builtin/praise.c:2551
 msgid "score"
 msgstr "점수"
 
-#: builtin/blame.c:2550
+#: builtin/praise.c:2550
 msgid "Find line copies within and across files"
 msgstr "파일 내부와 파일 사이의 복사된 줄을 찾습니다"
 
-#: builtin/blame.c:2551
+#: builtin/praise.c:2551
 msgid "Find line movements within and across files"
 msgstr "파일 내부와 파일 사이의 옮겨진 줄을 찾습니다"
 
-#: builtin/blame.c:2552
+#: builtin/praise.c:2552
 msgid "n,m"
 msgstr "n,m"
 
-#: builtin/blame.c:2552
+#: builtin/praise.c:2552
 msgid "Process only line range n,m, counting from 1"
 msgstr "n,m줄 (1번 줄부터 시작) 사이의 범위만 처리"
 
 #. TRANSLATORS: This string is used to tell us the maximum
-#. display width for a relative timestamp in "git blame"
+#. display width for a relative timestamp in "git praise"
 #. output.  For C locale, "4 years, 11 months ago", which
 #. takes 22 places, is the longest among various forms of
 #. relative timestamps, but your language may need more or
 #. fewer display columns.
-#: builtin/blame.c:2641
+#: builtin/praise.c:2641
 msgid "4 years, 11 months ago"
 msgstr "4년 11달 전"
 

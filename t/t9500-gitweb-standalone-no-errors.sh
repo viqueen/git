@@ -610,21 +610,21 @@ test_expect_success \
 
 test_expect_success \
 	'config override: tree view, features disabled in repo config' \
-	'git config gitweb.blame no &&
+	'git config gitweb.praise no &&
 	 git config gitweb.snapshot none &&
 	 git config gitweb.avatar gravatar &&
 	 gitweb_run "p=.git;a=tree"'
 
 test_expect_success \
 	'config override: tree view, features enabled in repo config (1)' \
-	'git config gitweb.blame yes &&
+	'git config gitweb.praise yes &&
 	 git config gitweb.snapshot "zip,tgz, tbz2" &&
 	 gitweb_run "p=.git;a=tree"'
 
 cat >.git/config <<\EOF
 # testing noval and alternate separator
 [gitweb]
-	blame
+	praise
 	snapshot = zip tgz
 EOF
 test_expect_success \

@@ -1,13 +1,13 @@
 #!/bin/sh
 
-test_description='git blame'
+test_description='git praise'
 . ./test-lib.sh
 
-PROG='git blame -c'
+PROG='git praise -c'
 . "$TEST_DIRECTORY"/annotate-tests.sh
 
-PROG='git blame -c -e'
-test_expect_success 'blame --show-email' '
+PROG='git praise -c -e'
+test_expect_success 'praise --show-email' '
 	check_count \
 		"<A@test.git>" 1 \
 		"<B@test.git>" 1 \
@@ -33,51 +33,51 @@ test_expect_success 'setup showEmail tests' '
 	EOF
 '
 
-find_blame () {
+find_praise () {
 	sed -e 's/^[^(]*//'
 }
 
-test_expect_success 'blame with no options and no config' '
-	git blame one >blame &&
-	find_blame <blame >result &&
+test_expect_success 'praise with no options and no config' '
+	git praise one >praise &&
+	find_praise <praise >result &&
 	test_cmp expected_n result
 '
 
-test_expect_success 'blame with showemail options' '
-	git blame --show-email one >blame1 &&
-	find_blame <blame1 >result &&
+test_expect_success 'praise with showemail options' '
+	git praise --show-email one >praise1 &&
+	find_praise <praise1 >result &&
 	test_cmp expected_e result &&
-	git blame -e one >blame2 &&
-	find_blame <blame2 >result &&
+	git praise -e one >praise2 &&
+	find_praise <praise2 >result &&
 	test_cmp expected_e result &&
-	git blame --no-show-email one >blame3 &&
-	find_blame <blame3 >result &&
+	git praise --no-show-email one >praise3 &&
+	find_praise <praise3 >result &&
 	test_cmp expected_n result
 '
 
-test_expect_success 'blame with showEmail config false' '
-	git config blame.showEmail false &&
-	git blame one >blame1 &&
-	find_blame <blame1 >result &&
+test_expect_success 'praise with showEmail config false' '
+	git config praise.showEmail false &&
+	git praise one >praise1 &&
+	find_praise <praise1 >result &&
 	test_cmp expected_n result &&
-	git blame --show-email one >blame2 &&
-	find_blame <blame2 >result &&
+	git praise --show-email one >praise2 &&
+	find_praise <praise2 >result &&
 	test_cmp expected_e result &&
-	git blame -e one >blame3 &&
-	find_blame <blame3 >result &&
+	git praise -e one >praise3 &&
+	find_praise <praise3 >result &&
 	test_cmp expected_e result &&
-	git blame --no-show-email one >blame4 &&
-	find_blame <blame4 >result &&
+	git praise --no-show-email one >praise4 &&
+	find_praise <praise4 >result &&
 	test_cmp expected_n result
 '
 
-test_expect_success 'blame with showEmail config true' '
-	git config blame.showEmail true &&
-	git blame one >blame1 &&
-	find_blame <blame1 >result &&
+test_expect_success 'praise with showEmail config true' '
+	git config praise.showEmail true &&
+	git praise one >praise1 &&
+	find_praise <praise1 >result &&
 	test_cmp expected_e result &&
-	git blame --no-show-email one >blame2 &&
-	find_blame <blame2 >result &&
+	git praise --no-show-email one >praise2 &&
+	find_praise <praise2 >result &&
 	test_cmp expected_n result
 '
 

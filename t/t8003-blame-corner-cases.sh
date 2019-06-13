@@ -1,6 +1,6 @@
 #!/bin/sh
 
-test_description='git blame corner cases'
+test_description='git praise corner cases'
 . ./test-lib.sh
 
 pick_fc='s/^[0-9a-f^]* *\([^ ]*\) *(\([^ ]*\) .*/\1-\2/'
@@ -54,67 +54,67 @@ test_expect_success setup '
 
 test_expect_success 'straight copy without -C' '
 
-	git blame uno | grep Second
+	git praise uno | grep Second
 
 '
 
 test_expect_success 'straight move without -C' '
 
-	git blame dos | grep Initial
+	git praise dos | grep Initial
 
 '
 
 test_expect_success 'straight copy with -C' '
 
-	git blame -C1 uno | grep Second
+	git praise -C1 uno | grep Second
 
 '
 
 test_expect_success 'straight move with -C' '
 
-	git blame -C1 dos | grep Initial
+	git praise -C1 dos | grep Initial
 
 '
 
 test_expect_success 'straight copy with -C -C' '
 
-	git blame -C -C1 uno | grep Initial
+	git praise -C -C1 uno | grep Initial
 
 '
 
 test_expect_success 'straight move with -C -C' '
 
-	git blame -C -C1 dos | grep Initial
+	git praise -C -C1 dos | grep Initial
 
 '
 
 test_expect_success 'append without -C' '
 
-	git blame -L2 tres | grep Second
+	git praise -L2 tres | grep Second
 
 '
 
 test_expect_success 'append with -C' '
 
-	git blame -L2 -C1 tres | grep Second
+	git praise -L2 -C1 tres | grep Second
 
 '
 
 test_expect_success 'append with -C -C' '
 
-	git blame -L2 -C -C1 tres | grep Second
+	git praise -L2 -C -C1 tres | grep Second
 
 '
 
 test_expect_success 'append with -C -C -C' '
 
-	git blame -L2 -C -C -C1 tres | grep Initial
+	git praise -L2 -C -C -C1 tres | grep Initial
 
 '
 
-test_expect_success 'blame wholesale copy' '
+test_expect_success 'praise wholesale copy' '
 
-	git blame -f -C -C1 HEAD^ -- cow | sed -e "$pick_fc" >current &&
+	git praise -f -C -C1 HEAD^ -- cow | sed -e "$pick_fc" >current &&
 	{
 		echo mouse-Initial
 		echo mouse-Second
@@ -124,9 +124,9 @@ test_expect_success 'blame wholesale copy' '
 
 '
 
-test_expect_success 'blame wholesale copy and more' '
+test_expect_success 'praise wholesale copy and more' '
 
-	git blame -f -C -C1 HEAD -- cow | sed -e "$pick_fc" >current &&
+	git praise -f -C -C1 HEAD -- cow | sed -e "$pick_fc" >current &&
 	{
 		echo mouse-Initial
 		echo mouse-Second
@@ -137,7 +137,7 @@ test_expect_success 'blame wholesale copy and more' '
 
 '
 
-test_expect_success 'blame path that used to be a directory' '
+test_expect_success 'praise path that used to be a directory' '
 	mkdir path &&
 	echo A A A A A >path/file &&
 	echo B B B B B >path/elif &&
@@ -149,10 +149,10 @@ test_expect_success 'blame path that used to be a directory' '
 	git add path &&
 	test_tick &&
 	git commit -m "path is a regular file" &&
-	git blame HEAD^.. -- path
+	git praise HEAD^.. -- path
 '
 
-test_expect_success 'blame to a commit with no author name' '
+test_expect_success 'praise to a commit with no author name' '
   TREE=$(git rev-parse HEAD:) &&
   cat >badcommit <<EOF &&
 tree $TREE
@@ -162,32 +162,32 @@ committer David Reiss <dreiss@facebook.com> 1234567890 +0000
 some message
 EOF
   COMMIT=$(git hash-object -t commit -w badcommit) &&
-  git --no-pager blame $COMMIT -- uno >/dev/null
+  git --no-pager praise $COMMIT -- uno >/dev/null
 '
 
-test_expect_success 'blame -L with invalid start' '
-	test_must_fail git blame -L5 tres 2>errors &&
+test_expect_success 'praise -L with invalid start' '
+	test_must_fail git praise -L5 tres 2>errors &&
 	grep "has only 2 lines" errors
 '
 
-test_expect_success 'blame -L with invalid end' '
-	test_must_fail git blame -L1,5 tres 2>errors &&
+test_expect_success 'praise -L with invalid end' '
+	test_must_fail git praise -L1,5 tres 2>errors &&
 	grep "has only 2 lines" errors
 '
 
-test_expect_success 'blame parses <end> part of -L' '
-	git blame -L1,1 tres >out &&
+test_expect_success 'praise parses <end> part of -L' '
+	git praise -L1,1 tres >out &&
 	cat out &&
 	test $(wc -l < out) -eq 1
 '
 
 test_expect_success 'indent of line numbers, nine lines' '
-	git blame nine_lines >actual &&
+	git praise nine_lines >actual &&
 	test $(grep -c "  " actual) = 0
 '
 
 test_expect_success 'indent of line numbers, ten lines' '
-	git blame ten_lines >actual &&
+	git praise ten_lines >actual &&
 	test $(grep -c "  " actual) = 9
 '
 
@@ -199,20 +199,20 @@ test_expect_success 'setup file with CRLF newlines' '
 	printf "testcase\r\n" >crlffile
 '
 
-test_expect_success 'blame file with CRLF core.autocrlf true' '
+test_expect_success 'praise file with CRLF core.autocrlf true' '
 	git config core.autocrlf true &&
-	git blame crlffile >actual &&
+	git praise crlffile >actual &&
 	grep "A U Thor" actual
 '
 
-test_expect_success 'blame file with CRLF attributes text' '
+test_expect_success 'praise file with CRLF attributes text' '
 	git config core.autocrlf false &&
 	echo "crlffile text" >.gitattributes &&
-	git blame crlffile >actual &&
+	git praise crlffile >actual &&
 	grep "A U Thor" actual
 '
 
-test_expect_success 'blame file with CRLF core.autocrlf=true' '
+test_expect_success 'praise file with CRLF core.autocrlf=true' '
 	git config core.autocrlf false &&
 	printf "testcase\r\n" >crlfinrepo &&
 	>.gitattributes &&
@@ -222,7 +222,7 @@ test_expect_success 'blame file with CRLF core.autocrlf=true' '
 	mv crlfinrepo tmp &&
 	git checkout crlfinrepo &&
 	rm tmp &&
-	git blame crlfinrepo >actual &&
+	git praise crlfinrepo >actual &&
 	grep "A U Thor" actual
 '
 

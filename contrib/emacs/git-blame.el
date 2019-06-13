@@ -1,4 +1,4 @@
-;;; git-blame.el --- Minor mode for incremental blame for Git  -*- coding: utf-8 -*-
+;;; git-praise.el --- Minor mode for incremental praise for Git  -*- coding: utf-8 -*-
 ;;
 ;; Copyright (C) 2007  David Kågedal
 ;;
@@ -36,7 +36,7 @@
 ;;
 ;;; Commentary:
 ;;
-;; Here is an Emacs implementation of incremental git-blame.  When you
+;; Here is an Emacs implementation of incremental git-praise.  When you
 ;; turn it on while viewing a file, the editor buffer will be updated by
 ;; setting the background of individual lines to a color that reflects
 ;; which commit it comes from.  And when you move around the buffer, a
@@ -45,19 +45,19 @@
 ;;; Installation:
 ;;
 ;; To use this package, put it somewhere in `load-path' (or add
-;; directory with git-blame.el to `load-path'), and add the following
+;; directory with git-praise.el to `load-path'), and add the following
 ;; line to your .emacs:
 ;;
-;;    (require 'git-blame)
+;;    (require 'git-praise)
 ;;
 ;; If you do not want to load this package before it is necessary, you
 ;; can make use of the `autoload' feature, e.g. by adding to your .emacs
 ;; the following lines
 ;;
-;;    (autoload 'git-blame-mode "git-blame"
-;;              "Minor mode for incremental blame for Git." t)
+;;    (autoload 'git-praise-mode "git-praise"
+;;              "Minor mode for incremental praise for Git." t)
 ;;
-;; Then first use of `M-x git-blame-mode' would load the package.
+;; Then first use of `M-x git-praise-mode' would load the package.
 
 ;;; Compatibility:
 ;;
@@ -81,29 +81,29 @@
 (eval-when-compile (require 'cl))			      ; to use `push', `pop'
 (require 'format-spec)
 
-(defface git-blame-prefix-face
+(defface git-praise-prefix-face
   '((((background dark)) (:foreground "gray"
                           :background "black"))
     (((background light)) (:foreground "gray"
                            :background "white"))
     (t (:weight bold)))
   "The face used for the hash prefix."
-  :group 'git-blame)
+  :group 'git-praise)
 
-(defgroup git-blame nil
-  "A minor mode showing Git blame information."
+(defgroup git-praise nil
+  "A minor mode showing Git praise information."
   :group 'git
-  :link '(function-link git-blame-mode))
+  :link '(function-link git-praise-mode))
 
 
-(defcustom git-blame-use-colors t
-  "Use colors to indicate commits in `git-blame-mode'."
+(defcustom git-praise-use-colors t
+  "Use colors to indicate commits in `git-praise-mode'."
   :type 'boolean
-  :group 'git-blame)
+  :group 'git-praise)
 
-(defcustom git-blame-prefix-format
+(defcustom git-praise-prefix-format
   "%h %20A:"
-  "The format of the prefix added to each line in `git-blame'
+  "The format of the prefix added to each line in `git-praise'
 mode. The format is passed to `format-spec' with the following format keys:
 
   %h - the abbreviated hash
@@ -114,12 +114,12 @@ mode. The format is passed to `format-spec' with the following format keys:
   %C - the committer email
   %s - the commit summary
 "
-  :group 'git-blame)
+  :group 'git-praise)
 
-(defcustom git-blame-mouseover-format
+(defcustom git-praise-mouseover-format
   "%h %a %A: %s"
   "The format of the description shown when pointing at a line in
-`git-blame' mode. The format string is passed to `format-spec'
+`git-praise' mode. The format string is passed to `format-spec'
 with the following format keys:
 
   %h - the abbreviated hash
@@ -130,10 +130,10 @@ with the following format keys:
   %C - the committer email
   %s - the commit summary
 "
-  :group 'git-blame)
+  :group 'git-praise)
 
 
-(defun git-blame-color-scale (&rest elements)
+(defun git-praise-color-scale (&rest elements)
   "Given a list, returns a list of triples formed with each
 elements of the list.
 
@@ -145,11 +145,11 @@ a b => bbb bba bab baa abb aba aaa aab"
           (setq result (cons (format "#%s%s%s" a b c) result)))))
     result))
 
-;; (git-blame-color-scale "0c" "04" "24" "1c" "2c" "34" "14" "3c") =>
+;; (git-praise-color-scale "0c" "04" "24" "1c" "2c" "34" "14" "3c") =>
 ;; ("#3c3c3c" "#3c3c14" "#3c3c34" "#3c3c2c" "#3c3c1c" "#3c3c24"
 ;; "#3c3c04" "#3c3c0c" "#3c143c" "#3c1414" "#3c1434" "#3c142c" ...)
 
-(defmacro git-blame-random-pop (l)
+(defmacro git-praise-random-pop (l)
   "Select a random element from L and returns it. Also remove
 selected element from l."
   ;; only works on lists with unique elements
@@ -157,159 +157,159 @@ selected element from l."
      (setq ,l (remove e ,l))
      e))
 
-(defvar git-blame-log-oneline-format
+(defvar git-praise-log-oneline-format
   "format:[%cr] %cn: %s"
   "*Formatting option used for describing current line in the minibuffer.
 
 This option is used to pass to git log --pretty= command-line option,
 and describe which commit the current line was made.")
 
-(defvar git-blame-dark-colors
-  (git-blame-color-scale "0c" "04" "24" "1c" "2c" "34" "14" "3c")
+(defvar git-praise-dark-colors
+  (git-praise-color-scale "0c" "04" "24" "1c" "2c" "34" "14" "3c")
   "*List of colors (format #RGB) to use in a dark environment.
 
-To check out the list, evaluate (list-colors-display git-blame-dark-colors).")
+To check out the list, evaluate (list-colors-display git-praise-dark-colors).")
 
-(defvar git-blame-light-colors
-  (git-blame-color-scale "c4" "d4" "cc" "dc" "f4" "e4" "fc" "ec")
+(defvar git-praise-light-colors
+  (git-praise-color-scale "c4" "d4" "cc" "dc" "f4" "e4" "fc" "ec")
   "*List of colors (format #RGB) to use in a light environment.
 
-To check out the list, evaluate (list-colors-display git-blame-light-colors).")
+To check out the list, evaluate (list-colors-display git-praise-light-colors).")
 
-(defvar git-blame-colors '()
-  "Colors used by git-blame. The list is built once when activating git-blame
+(defvar git-praise-colors '()
+  "Colors used by git-praise. The list is built once when activating git-praise
 minor mode.")
 
-(defvar git-blame-ancient-color "dark green"
+(defvar git-praise-ancient-color "dark green"
   "*Color to be used for ancient commit.")
 
-(defvar git-blame-autoupdate t
-  "*Automatically update the blame display while editing")
+(defvar git-praise-autoupdate t
+  "*Automatically update the praise display while editing")
 
-(defvar git-blame-proc nil
-  "The running git-blame process")
-(make-variable-buffer-local 'git-blame-proc)
+(defvar git-praise-proc nil
+  "The running git-praise process")
+(make-variable-buffer-local 'git-praise-proc)
 
-(defvar git-blame-overlays nil
-  "The git-blame overlays used in the current buffer.")
-(make-variable-buffer-local 'git-blame-overlays)
+(defvar git-praise-overlays nil
+  "The git-praise overlays used in the current buffer.")
+(make-variable-buffer-local 'git-praise-overlays)
 
-(defvar git-blame-cache nil
-  "A cache of git-blame information for the current buffer")
-(make-variable-buffer-local 'git-blame-cache)
+(defvar git-praise-cache nil
+  "A cache of git-praise information for the current buffer")
+(make-variable-buffer-local 'git-praise-cache)
 
-(defvar git-blame-idle-timer nil
-  "An idle timer that updates the blame")
-(make-variable-buffer-local 'git-blame-cache)
+(defvar git-praise-idle-timer nil
+  "An idle timer that updates the praise")
+(make-variable-buffer-local 'git-praise-cache)
 
-(defvar git-blame-update-queue nil
+(defvar git-praise-update-queue nil
   "A queue of update requests")
-(make-variable-buffer-local 'git-blame-update-queue)
+(make-variable-buffer-local 'git-praise-update-queue)
 
 ;; FIXME: docstrings
-(defvar git-blame-file nil)
-(defvar git-blame-current nil)
+(defvar git-praise-file nil)
+(defvar git-praise-current nil)
 
-(defvar git-blame-mode nil)
-(make-variable-buffer-local 'git-blame-mode)
+(defvar git-praise-mode nil)
+(make-variable-buffer-local 'git-praise-mode)
 
-(defvar git-blame-mode-line-string " blame"
-  "String to display on the mode line when git-blame is active.")
+(defvar git-praise-mode-line-string " praise"
+  "String to display on the mode line when git-praise is active.")
 
-(or (assq 'git-blame-mode minor-mode-alist)
+(or (assq 'git-praise-mode minor-mode-alist)
     (setq minor-mode-alist
-	  (cons '(git-blame-mode git-blame-mode-line-string) minor-mode-alist)))
+	  (cons '(git-praise-mode git-praise-mode-line-string) minor-mode-alist)))
 
 ;;;###autoload
-(defun git-blame-mode (&optional arg)
-  "Toggle minor mode for displaying Git blame
+(defun git-praise-mode (&optional arg)
+  "Toggle minor mode for displaying Git praise
 
 With prefix ARG, turn the mode on if ARG is positive."
   (interactive "P")
   (cond
    ((null arg)
-    (if git-blame-mode (git-blame-mode-off) (git-blame-mode-on)))
-   ((> (prefix-numeric-value arg) 0) (git-blame-mode-on))
-   (t (git-blame-mode-off))))
+    (if git-praise-mode (git-praise-mode-off) (git-praise-mode-on)))
+   ((> (prefix-numeric-value arg) 0) (git-praise-mode-on))
+   (t (git-praise-mode-off))))
 
-(defun git-blame-mode-on ()
-  "Turn on git-blame mode.
+(defun git-praise-mode-on ()
+  "Turn on git-praise mode.
 
-See also function `git-blame-mode'."
-  (make-local-variable 'git-blame-colors)
-  (if git-blame-autoupdate
-      (add-hook 'after-change-functions 'git-blame-after-change nil t)
-    (remove-hook 'after-change-functions 'git-blame-after-change t))
-  (git-blame-cleanup)
+See also function `git-praise-mode'."
+  (make-local-variable 'git-praise-colors)
+  (if git-praise-autoupdate
+      (add-hook 'after-change-functions 'git-praise-after-change nil t)
+    (remove-hook 'after-change-functions 'git-praise-after-change t))
+  (git-praise-cleanup)
   (let ((bgmode (cdr (assoc 'background-mode (frame-parameters)))))
     (if (eq bgmode 'dark)
-	(setq git-blame-colors git-blame-dark-colors)
-      (setq git-blame-colors git-blame-light-colors)))
-  (setq git-blame-cache (make-hash-table :test 'equal))
-  (setq git-blame-mode t)
-  (git-blame-run))
+	(setq git-praise-colors git-praise-dark-colors)
+      (setq git-praise-colors git-praise-light-colors)))
+  (setq git-praise-cache (make-hash-table :test 'equal))
+  (setq git-praise-mode t)
+  (git-praise-run))
 
-(defun git-blame-mode-off ()
-  "Turn off git-blame mode.
+(defun git-praise-mode-off ()
+  "Turn off git-praise mode.
 
-See also function `git-blame-mode'."
-  (git-blame-cleanup)
-  (if git-blame-idle-timer (cancel-timer git-blame-idle-timer))
-  (setq git-blame-mode nil))
+See also function `git-praise-mode'."
+  (git-praise-cleanup)
+  (if git-praise-idle-timer (cancel-timer git-praise-idle-timer))
+  (setq git-praise-mode nil))
 
 ;;;###autoload
-(defun git-reblame ()
-  "Recalculate all blame information in the current buffer"
+(defun git-repraise ()
+  "Recalculate all praise information in the current buffer"
   (interactive)
-  (unless git-blame-mode
-    (error "Git-blame is not active"))
+  (unless git-praise-mode
+    (error "Git-praise is not active"))
 
-  (git-blame-cleanup)
-  (git-blame-run))
+  (git-praise-cleanup)
+  (git-praise-run))
 
-(defun git-blame-run (&optional startline endline)
-  (if git-blame-proc
+(defun git-praise-run (&optional startline endline)
+  (if git-praise-proc
       ;; Should maybe queue up a new run here
-      (message "Already running git blame")
+      (message "Already running git praise")
     (let ((display-buf (current-buffer))
-          (blame-buf (get-buffer-create
-                      (concat " git blame for " (buffer-name))))
+          (praise-buf (get-buffer-create
+                      (concat " git praise for " (buffer-name))))
           (args '("--incremental" "--contents" "-")))
       (if startline
           (setq args (append args
                              (list "-L" (format "%d,%d" startline endline)))))
       (setq args (append args
                          (list (file-name-nondirectory buffer-file-name))))
-      (setq git-blame-proc
+      (setq git-praise-proc
             (apply 'start-process
-                   "git-blame" blame-buf
-                   "git" "blame"
+                   "git-praise" praise-buf
+                   "git" "praise"
                    args))
-      (with-current-buffer blame-buf
+      (with-current-buffer praise-buf
         (erase-buffer)
-        (make-local-variable 'git-blame-file)
-        (make-local-variable 'git-blame-current)
-        (setq git-blame-file display-buf)
-        (setq git-blame-current nil))
-      (set-process-filter git-blame-proc 'git-blame-filter)
-      (set-process-sentinel git-blame-proc 'git-blame-sentinel)
-      (process-send-region git-blame-proc (point-min) (point-max))
-      (process-send-eof git-blame-proc))))
+        (make-local-variable 'git-praise-file)
+        (make-local-variable 'git-praise-current)
+        (setq git-praise-file display-buf)
+        (setq git-praise-current nil))
+      (set-process-filter git-praise-proc 'git-praise-filter)
+      (set-process-sentinel git-praise-proc 'git-praise-sentinel)
+      (process-send-region git-praise-proc (point-min) (point-max))
+      (process-send-eof git-praise-proc))))
 
-(defun remove-git-blame-text-properties (start end)
+(defun remove-git-praise-text-properties (start end)
   (let ((modified (buffer-modified-p))
         (inhibit-read-only t))
     (remove-text-properties start end '(point-entered nil))
     (set-buffer-modified-p modified)))
 
-(defun git-blame-cleanup ()
-  "Remove all blame properties"
-    (mapc 'delete-overlay git-blame-overlays)
-    (setq git-blame-overlays nil)
-    (remove-git-blame-text-properties (point-min) (point-max)))
+(defun git-praise-cleanup ()
+  "Remove all praise properties"
+    (mapc 'delete-overlay git-praise-overlays)
+    (setq git-praise-overlays nil)
+    (remove-git-praise-text-properties (point-min) (point-max)))
 
-(defun git-blame-update-region (start end)
-  "Rerun blame to get updates between START and END"
+(defun git-praise-update-region (start end)
+  "Rerun praise to get updates between START and END"
   (let ((overlays (overlays-in start end)))
     (while overlays
       (let ((overlay (pop overlays)))
@@ -317,75 +317,75 @@ See also function `git-blame-mode'."
             (setq start (overlay-start overlay)))
         (if (> (overlay-end overlay) end)
             (setq end (overlay-end overlay)))
-        (setq git-blame-overlays (delete overlay git-blame-overlays))
+        (setq git-praise-overlays (delete overlay git-praise-overlays))
         (delete-overlay overlay))))
-  (remove-git-blame-text-properties start end)
+  (remove-git-praise-text-properties start end)
   ;; We can be sure that start and end are at line breaks
-  (git-blame-run (1+ (count-lines (point-min) start))
+  (git-praise-run (1+ (count-lines (point-min) start))
                  (count-lines (point-min) end)))
 
-(defun git-blame-sentinel (proc status)
+(defun git-praise-sentinel (proc status)
   (with-current-buffer (process-buffer proc)
-    (with-current-buffer git-blame-file
-      (setq git-blame-proc nil)
-      (if git-blame-update-queue
-          (git-blame-delayed-update))))
+    (with-current-buffer git-praise-file
+      (setq git-praise-proc nil)
+      (if git-praise-update-queue
+          (git-praise-delayed-update))))
   ;;(kill-buffer (process-buffer proc))
-  ;;(message "git blame finished")
+  ;;(message "git praise finished")
   )
 
-(defvar in-blame-filter nil)
+(defvar in-praise-filter nil)
 
-(defun git-blame-filter (proc str)
+(defun git-praise-filter (proc str)
   (with-current-buffer (process-buffer proc)
     (save-excursion
       (goto-char (process-mark proc))
       (insert-before-markers str)
       (goto-char (point-min))
-      (unless in-blame-filter
+      (unless in-praise-filter
         (let ((more t)
-              (in-blame-filter t))
+              (in-praise-filter t))
           (while more
-            (setq more (git-blame-parse))))))))
+            (setq more (git-praise-parse))))))))
 
-(defun git-blame-parse ()
+(defun git-praise-parse ()
   (cond ((looking-at "\\([0-9a-f]\\{40\\}\\) \\([0-9]+\\) \\([0-9]+\\) \\([0-9]+\\)\n")
          (let ((hash (match-string 1))
                (src-line (string-to-number (match-string 2)))
                (res-line (string-to-number (match-string 3)))
                (num-lines (string-to-number (match-string 4))))
            (delete-region (point) (match-end 0))
-           (setq git-blame-current (list (git-blame-new-commit hash)
+           (setq git-praise-current (list (git-praise-new-commit hash)
                                          src-line res-line num-lines)))
          t)
         ((looking-at "\\([a-z-]+\\) \\(.+\\)\n")
          (let ((key (match-string 1))
                (value (match-string 2)))
            (delete-region (point) (match-end 0))
-           (git-blame-add-info (car git-blame-current) key value)
+           (git-praise-add-info (car git-praise-current) key value)
            (when (string= key "filename")
-             (git-blame-create-overlay (car git-blame-current)
-                                       (caddr git-blame-current)
-                                       (cadddr git-blame-current))
-             (setq git-blame-current nil)))
+             (git-praise-create-overlay (car git-praise-current)
+                                       (caddr git-praise-current)
+                                       (cadddr git-praise-current))
+             (setq git-praise-current nil)))
          t)
         (t
          nil)))
 
-(defun git-blame-new-commit (hash)
-  (with-current-buffer git-blame-file
-    (or (gethash hash git-blame-cache)
+(defun git-praise-new-commit (hash)
+  (with-current-buffer git-praise-file
+    (or (gethash hash git-praise-cache)
         ;; Assign a random color to each new commit info
         ;; Take care not to select the same color multiple times
-        (let* ((color (if git-blame-colors
-                          (git-blame-random-pop git-blame-colors)
-                        git-blame-ancient-color))
+        (let* ((color (if git-praise-colors
+                          (git-praise-random-pop git-praise-colors)
+                        git-praise-ancient-color))
                (info `(,hash (color . ,color))))
-          (puthash hash info git-blame-cache)
+          (puthash hash info git-praise-cache)
           info))))
 
-(defun git-blame-create-overlay (info start-line num-lines)
-  (with-current-buffer git-blame-file
+(defun git-praise-create-overlay (info start-line num-lines)
+  (with-current-buffer git-praise-file
     (save-excursion
       (let ((inhibit-point-motion-hooks t)
             (inhibit-modification-hooks t))
@@ -397,30 +397,30 @@ See also function `git-blame-mode'."
                (hash (car info))
                (spec `((?h . ,(substring hash 0 6))
                        (?H . ,hash)
-                       (?a . ,(git-blame-get-info info 'author))
-                       (?A . ,(git-blame-get-info info 'author-mail))
-                       (?c . ,(git-blame-get-info info 'committer))
-                       (?C . ,(git-blame-get-info info 'committer-mail))
-                       (?s . ,(git-blame-get-info info 'summary)))))
-          (push ovl git-blame-overlays)
-          (overlay-put ovl 'git-blame info)
+                       (?a . ,(git-praise-get-info info 'author))
+                       (?A . ,(git-praise-get-info info 'author-mail))
+                       (?c . ,(git-praise-get-info info 'committer))
+                       (?C . ,(git-praise-get-info info 'committer-mail))
+                       (?s . ,(git-praise-get-info info 'summary)))))
+          (push ovl git-praise-overlays)
+          (overlay-put ovl 'git-praise info)
           (overlay-put ovl 'help-echo
-                       (format-spec git-blame-mouseover-format spec))
-          (if git-blame-use-colors
+                       (format-spec git-praise-mouseover-format spec))
+          (if git-praise-use-colors
               (overlay-put ovl 'face (list :background
                                            (cdr (assq 'color (cdr info))))))
           (overlay-put ovl 'line-prefix
-                       (propertize (format-spec git-blame-prefix-format spec)
-                                   'face 'git-blame-prefix-face)))))))
+                       (propertize (format-spec git-praise-prefix-format spec)
+                                   'face 'git-praise-prefix-face)))))))
 
-(defun git-blame-add-info (info key value)
+(defun git-praise-add-info (info key value)
   (nconc info (list (cons (intern key) value))))
 
-(defun git-blame-get-info (info key)
+(defun git-praise-get-info (info key)
   (cdr (assq key (cdr info))))
 
-(defun git-blame-current-commit ()
-  (let ((info (get-char-property (point) 'git-blame)))
+(defun git-praise-current-commit ()
+  (let ((info (get-char-property (point) 'git-praise)))
     (if info
         (car info)
       (error "No commit info"))))
@@ -429,56 +429,56 @@ See also function `git-blame-mode'."
   (with-temp-buffer
     (call-process "git" nil t nil
                   "log" "-1"
-		  (concat "--pretty=" git-blame-log-oneline-format)
+		  (concat "--pretty=" git-praise-log-oneline-format)
                   hash)
     (buffer-substring (point-min) (point-max))))
 
-(defvar git-blame-last-identification nil)
-(make-variable-buffer-local 'git-blame-last-identification)
-(defun git-blame-identify (&optional hash)
+(defvar git-praise-last-identification nil)
+(make-variable-buffer-local 'git-praise-last-identification)
+(defun git-praise-identify (&optional hash)
   (interactive)
-  (let ((info (gethash (or hash (git-blame-current-commit)) git-blame-cache)))
-    (when (and info (not (eq info git-blame-last-identification)))
+  (let ((info (gethash (or hash (git-praise-current-commit)) git-praise-cache)))
+    (when (and info (not (eq info git-praise-last-identification)))
       (message "%s" (nth 4 info))
-      (setq git-blame-last-identification info))))
+      (setq git-praise-last-identification info))))
 
-;; (defun git-blame-after-save ()
-;;   (when git-blame-mode
-;;     (git-blame-cleanup)
-;;     (git-blame-run)))
-;; (add-hook 'after-save-hook 'git-blame-after-save)
+;; (defun git-praise-after-save ()
+;;   (when git-praise-mode
+;;     (git-praise-cleanup)
+;;     (git-praise-run)))
+;; (add-hook 'after-save-hook 'git-praise-after-save)
 
-(defun git-blame-after-change (start end length)
-  (when git-blame-mode
-    (git-blame-enq-update start end)))
+(defun git-praise-after-change (start end length)
+  (when git-praise-mode
+    (git-praise-enq-update start end)))
 
-(defvar git-blame-last-update nil)
-(make-variable-buffer-local 'git-blame-last-update)
-(defun git-blame-enq-update (start end)
-  "Mark the region between START and END as needing blame update"
+(defvar git-praise-last-update nil)
+(make-variable-buffer-local 'git-praise-last-update)
+(defun git-praise-enq-update (start end)
+  "Mark the region between START and END as needing praise update"
   ;; Try to be smart and avoid multiple callouts for sequential
   ;; editing
-  (cond ((and git-blame-last-update
-              (= start (cdr git-blame-last-update)))
-         (setcdr git-blame-last-update end))
-        ((and git-blame-last-update
-              (= end (car git-blame-last-update)))
-         (setcar git-blame-last-update start))
+  (cond ((and git-praise-last-update
+              (= start (cdr git-praise-last-update)))
+         (setcdr git-praise-last-update end))
+        ((and git-praise-last-update
+              (= end (car git-praise-last-update)))
+         (setcar git-praise-last-update start))
         (t
-         (setq git-blame-last-update (cons start end))
-         (setq git-blame-update-queue (nconc git-blame-update-queue
-                                             (list git-blame-last-update)))))
-  (unless (or git-blame-proc git-blame-idle-timer)
-    (setq git-blame-idle-timer
-          (run-with-idle-timer 0.5 nil 'git-blame-delayed-update))))
+         (setq git-praise-last-update (cons start end))
+         (setq git-praise-update-queue (nconc git-praise-update-queue
+                                             (list git-praise-last-update)))))
+  (unless (or git-praise-proc git-praise-idle-timer)
+    (setq git-praise-idle-timer
+          (run-with-idle-timer 0.5 nil 'git-praise-delayed-update))))
 
-(defun git-blame-delayed-update ()
-  (setq git-blame-idle-timer nil)
-  (if git-blame-update-queue
-      (let ((first (pop git-blame-update-queue))
+(defun git-praise-delayed-update ()
+  (setq git-praise-idle-timer nil)
+  (if git-praise-update-queue
+      (let ((first (pop git-praise-update-queue))
             (inhibit-point-motion-hooks t))
-        (git-blame-update-region (car first) (cdr first)))))
+        (git-praise-update-region (car first) (cdr first)))))
 
-(provide 'git-blame)
+(provide 'git-praise)
 
-;;; git-blame.el ends here
+;;; git-praise.el ends here

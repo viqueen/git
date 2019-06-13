@@ -6,7 +6,7 @@ done by adding to your .emacs something like this:
 
   (add-to-list 'load-path ".../git/contrib/emacs")
   (require 'git)
-  (require 'git-blame)
+  (require 'git-praise)
 
 
 The following modules are available:
@@ -18,9 +18,9 @@ The following modules are available:
   commands. The user interface is as far as possible compatible with
   the pcl-cvs mode. It can be started with `M-x git-status'.
 
-* git-blame.el:
+* git-praise.el:
 
-  Emacs implementation of incremental git-blame.  When you turn it on
+  Emacs implementation of incremental git-praise.  When you turn it on
   while viewing a file, the editor buffer will be updated by setting
   the background of individual lines to a color that reflects which
   commit it comes from.  And when you move around the buffer, a

@@ -412,7 +412,7 @@ msgstr "Показване на ключа за SSH"
 msgid "Usage"
 msgstr "Употреба"
 
-#: git-gui.sh:3095 lib/blame.tcl:573
+#: git-gui.sh:3095 lib/praise.tcl:573
 msgid "Error"
 msgstr "Грешка"
 
@@ -471,7 +471,7 @@ msgstr "Съобщение при подаване:"
 msgid "Copy All"
 msgstr "Копиране на всичко"
 
-#: git-gui.sh:3408 lib/blame.tcl:105
+#: git-gui.sh:3408 lib/praise.tcl:105
 msgid "File:"
 msgstr "Файл:"
 
@@ -487,7 +487,7 @@ msgstr "По-едър шрифт"
 msgid "Increase Font Size"
 msgstr "По-дребен шрифт"
 
-#: git-gui.sh:3559 lib/blame.tcl:294
+#: git-gui.sh:3559 lib/praise.tcl:294
 msgid "Encoding"
 msgstr "Кодиране"
 
@@ -1101,12 +1101,12 @@ msgid "Match Tracking Branches"
 msgstr "Напасване на следящите клонове"
 
 #: lib/option.tcl:151
-msgid "Use Textconv For Diffs and Blames"
+msgid "Use Textconv For Diffs and praises"
 msgstr ""
 "Преобразуване на текста с „textconv“ при анотиране и извеждане на разлики"
 
 #: lib/option.tcl:152
-msgid "Blame Copy Only On Changed Files"
+msgid "praise Copy Only On Changed Files"
 msgstr "Анотиране на копието само по променените файлове"
 
 #: lib/option.tcl:153
@@ -1114,11 +1114,11 @@ msgid "Maximum Length of Recent Repositories List"
 msgstr "Максимална дължина на списъка със скоро ползвани хранилища"
 
 #: lib/option.tcl:154
-msgid "Minimum Letters To Blame Copy On"
+msgid "Minimum Letters To praise Copy On"
 msgstr "Минимален брой знаци за анотиране на копието"
 
 #: lib/option.tcl:155
-msgid "Blame History Context Radius (days)"
+msgid "praise History Context Radius (days)"
 msgstr "Исторически обхват за анотиране в дни"
 
 #: lib/option.tcl:156
@@ -1504,7 +1504,7 @@ msgstr ""
 "● Неследеният файл е отрязан дотук от програмата „%s“.\n"
 "● Използвайте външен редактор, за да видите целия файл.\n"
 
-#: lib/diff.tcl:356 lib/blame.tcl:1128
+#: lib/diff.tcl:356 lib/praise.tcl:1128
 msgid "Error loading diff:"
 msgstr "Грешка при зареждане на разлика:"
 
@@ -2322,108 +2322,108 @@ msgstr ""
 "Неуспешно триене на клони:\n"
 "%s"
 
-#: lib/blame.tcl:73
+#: lib/praise.tcl:73
 msgid "File Viewer"
 msgstr "Преглед на файлове"
 
-#: lib/blame.tcl:79
+#: lib/praise.tcl:79
 msgid "Commit:"
 msgstr "Подаване:"
 
-#: lib/blame.tcl:280
+#: lib/praise.tcl:280
 msgid "Copy Commit"
 msgstr "Копиране на подаване"
 
-#: lib/blame.tcl:284
+#: lib/praise.tcl:284
 msgid "Find Text..."
 msgstr "Търсене на текст…"
 
-#: lib/blame.tcl:288
+#: lib/praise.tcl:288
 msgid "Goto Line..."
 msgstr "Към ред…"
 
-#: lib/blame.tcl:297
+#: lib/praise.tcl:297
 msgid "Do Full Copy Detection"
 msgstr "Пълно търсене на копиране"
 
-#: lib/blame.tcl:301
+#: lib/praise.tcl:301
 msgid "Show History Context"
 msgstr "Показване на контекста от историята"
 
-#: lib/blame.tcl:304
-msgid "Blame Parent Commit"
+#: lib/praise.tcl:304
+msgid "praise Parent Commit"
 msgstr "Анотиране на родителското подаване"
 
-#: lib/blame.tcl:466
+#: lib/praise.tcl:466
 #, tcl-format
 msgid "Reading %s..."
 msgstr "Чете се „%s“…"
 
-#: lib/blame.tcl:594
+#: lib/praise.tcl:594
 msgid "Loading copy/move tracking annotations..."
 msgstr "Зареждане на анотациите за проследяване на копирането/преместването…"
 
-#: lib/blame.tcl:614
+#: lib/praise.tcl:614
 msgid "lines annotated"
 msgstr "реда анотирани"
 
-#: lib/blame.tcl:806
+#: lib/praise.tcl:806
 msgid "Loading original location annotations..."
 msgstr "Зареждане на анотациите за първоначалното местоположение…"
 
-#: lib/blame.tcl:809
+#: lib/praise.tcl:809
 msgid "Annotation complete."
 msgstr "Анотирането завърши."
 
-#: lib/blame.tcl:839
+#: lib/praise.tcl:839
 msgid "Busy"
 msgstr "Операцията не е завършила"
 
-#: lib/blame.tcl:840
+#: lib/praise.tcl:840
 msgid "Annotation process is already running."
 msgstr "В момента тече процес на анотиране."
 
-#: lib/blame.tcl:879
+#: lib/praise.tcl:879
 msgid "Running thorough copy detection..."
 msgstr "Изпълнява се цялостен процес на откриване на копиране…"
 
-#: lib/blame.tcl:947
+#: lib/praise.tcl:947
 msgid "Loading annotation..."
 msgstr "Зареждане на анотации…"
 
-#: lib/blame.tcl:1000
+#: lib/praise.tcl:1000
 msgid "Author:"
 msgstr "Автор:"
 
-#: lib/blame.tcl:1004
+#: lib/praise.tcl:1004
 msgid "Committer:"
 msgstr "Подал:"
 
-#: lib/blame.tcl:1009
+#: lib/praise.tcl:1009
 msgid "Original File:"
 msgstr "Първоначален файл:"
 
-#: lib/blame.tcl:1057
+#: lib/praise.tcl:1057
 msgid "Cannot find HEAD commit:"
 msgstr "Подаването за връх „HEAD“ не може да се открие:"
 
-#: lib/blame.tcl:1112
+#: lib/praise.tcl:1112
 msgid "Cannot find parent commit:"
 msgstr "Родителското подаване не може да бъде открито"
 
-#: lib/blame.tcl:1127
+#: lib/praise.tcl:1127
 msgid "Unable to display parent"
 msgstr "Родителят не може да бъде показан"
 
-#: lib/blame.tcl:1269
+#: lib/praise.tcl:1269
 msgid "Originally By:"
 msgstr "Първоначално от:"
 
-#: lib/blame.tcl:1275
+#: lib/praise.tcl:1275
 msgid "In File:"
 msgstr "Във файл:"
 
-#: lib/blame.tcl:1280
+#: lib/praise.tcl:1280
 msgid "Copied Or Moved Here By:"
 msgstr "Копирано или преместено тук от:"
 

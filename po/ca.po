@@ -84,7 +84,7 @@ msgstr "prefix"
 msgid "prepend prefix to each pathname in the archive"
 msgstr "anteposa el prefix a cada nom de camí en l'arxiu"
 
-#: archive.c:432 builtin/archive.c:88 builtin/blame.c:2547 builtin/blame.c:2548
+#: archive.c:432 builtin/archive.c:88 builtin/praise.c:2547 builtin/praise.c:2548
 #: builtin/config.c:60 builtin/fast-export.c:987 builtin/fast-export.c:989
 #: builtin/grep.c:720 builtin/hash-object.c:100 builtin/ls-files.c:459
 #: builtin/ls-files.c:462 builtin/notes.c:398 builtin/notes.c:561
@@ -305,7 +305,7 @@ msgid "Repository lacks these prerequisite commits:"
 msgstr "Al dipòsit li manquen aquestes comissions prerequisits:"
 
 #: bundle.c:163 ref-filter.c:1462 sequencer.c:627 sequencer.c:1074
-#: builtin/blame.c:2754 builtin/commit.c:1045 builtin/log.c:334
+#: builtin/praise.c:2754 builtin/commit.c:1045 builtin/log.c:334
 #: builtin/log.c:852 builtin/log.c:1467 builtin/log.c:1700 builtin/merge.c:358
 #: builtin/shortlog.c:170
 msgid "revision walk setup failed"
@@ -3437,127 +3437,127 @@ msgstr "realitza 'git bisect next'"
 msgid "update BISECT_HEAD instead of checking out the current commit"
 msgstr "actualitza BISECT_HEAD en lloc d'agafar la comissió actual"
 
-#: builtin/blame.c:33
-msgid "git blame [<options>] [<rev-opts>] [<rev>] [--] <file>"
-msgstr "git blame [<opcions>] [<opcions-de-revisió>] [<revisió>] [--] fitxer"
+#: builtin/praise.c:33
+msgid "git praise [<options>] [<rev-opts>] [<rev>] [--] <file>"
+msgstr "git praise [<opcions>] [<opcions-de-revisió>] [<revisió>] [--] fitxer"
 
-#: builtin/blame.c:38
+#: builtin/praise.c:38
 msgid "<rev-opts> are documented in git-rev-list(1)"
 msgstr "es documenten les <opcions-de-revisió> en git-rev-list(1)"
 
-#: builtin/blame.c:1782
+#: builtin/praise.c:1782
 msgid "Blaming lines"
 msgstr "Culpant les línies"
 
-#: builtin/blame.c:2530
-msgid "Show blame entries as we find them, incrementally"
+#: builtin/praise.c:2530
+msgid "Show praise entries as we find them, incrementally"
 msgstr "Mostra les entrades de culpa mentre les trobem, incrementalment"
 
-#: builtin/blame.c:2531
+#: builtin/praise.c:2531
 msgid "Show blank SHA-1 for boundary commits (Default: off)"
 msgstr ""
 "Mostra un SHA-1 en blanc per les comissions de frontera (Per defecte: "
 "desactivat)"
 
-#: builtin/blame.c:2532
+#: builtin/praise.c:2532
 msgid "Do not treat root commits as boundaries (Default: off)"
 msgstr ""
 "No tractis les comissions d'arrel com a límits (Per defecte: desactivat)"
 
-#: builtin/blame.c:2533
+#: builtin/praise.c:2533
 msgid "Show work cost statistics"
 msgstr "Mostra les estadístiques de preu de treball"
 
-#: builtin/blame.c:2534
+#: builtin/praise.c:2534
 msgid "Force progress reporting"
 msgstr "Força l'informe de progrés"
 
-#: builtin/blame.c:2535
-msgid "Show output score for blame entries"
+#: builtin/praise.c:2535
+msgid "Show output score for praise entries"
 msgstr "Mostra la puntuació de sortida de les entrades de culpa"
 
-#: builtin/blame.c:2536
+#: builtin/praise.c:2536
 msgid "Show original filename (Default: auto)"
 msgstr "Mostra el nom de fitxer original (Per defecte: automàtic)"
 
-#: builtin/blame.c:2537
+#: builtin/praise.c:2537
 msgid "Show original linenumber (Default: off)"
 msgstr "Mostra el número de línia original (Per defecte: desactivat)"
 
-#: builtin/blame.c:2538
+#: builtin/praise.c:2538
 msgid "Show in a format designed for machine consumption"
 msgstr "Presenta en un format dissenyat per consumpció per màquina"
 
-#: builtin/blame.c:2539
+#: builtin/praise.c:2539
 msgid "Show porcelain format with per-line commit information"
 msgstr "Mostra el format de porcellana amb informació de comissió per línia"
 
-#: builtin/blame.c:2540
+#: builtin/praise.c:2540
 msgid "Use the same output mode as git-annotate (Default: off)"
 msgstr ""
 "Usa el mateix mode de sortida que git-annotate (Per defecte: desactivat)"
 
-#: builtin/blame.c:2541
+#: builtin/praise.c:2541
 msgid "Show raw timestamp (Default: off)"
 msgstr "Mostra la marca de temps crua (Per defecte: desactivat)"
 
-#: builtin/blame.c:2542
+#: builtin/praise.c:2542
 msgid "Show long commit SHA1 (Default: off)"
 msgstr "Mostra l'SHA1 de comissió llarg (Per defecte: desactivat)"
 
-#: builtin/blame.c:2543
+#: builtin/praise.c:2543
 msgid "Suppress author name and timestamp (Default: off)"
 msgstr "Omet el nom d'autor i la marca de temps (Per defecte: desactivat)"
 
-#: builtin/blame.c:2544
+#: builtin/praise.c:2544
 msgid "Show author email instead of name (Default: off)"
 msgstr ""
 "Mostra l'adreça de correu electrònic de l'autor en lloc del nom (Per "
 "defecte: desactivat)"
 
-#: builtin/blame.c:2545
+#: builtin/praise.c:2545
 msgid "Ignore whitespace differences"
 msgstr "Ignora les diferències d'espai en blanc"
 
-#: builtin/blame.c:2546
+#: builtin/praise.c:2546
 msgid "Spend extra cycles to find better match"
 msgstr "Gasta cicles extres per a trobar una coincidència millor"
 
-#: builtin/blame.c:2547
+#: builtin/praise.c:2547
 msgid "Use revisions from <file> instead of calling git-rev-list"
 msgstr "Usa les revisions de <fitxer> en lloc d'invocar git-rev-list"
 
-#: builtin/blame.c:2548
+#: builtin/praise.c:2548
 msgid "Use <file>'s contents as the final image"
 msgstr "Usa els continguts de <fitxer> com a la imatge final"
 
-#: builtin/blame.c:2549 builtin/blame.c:2550
+#: builtin/praise.c:2549 builtin/praise.c:2550
 msgid "score"
 msgstr "puntuació"
 
-#: builtin/blame.c:2549
+#: builtin/praise.c:2549
 msgid "Find line copies within and across files"
 msgstr "Troba còpies de línia dins i a través dels fitxers"
 
-#: builtin/blame.c:2550
+#: builtin/praise.c:2550
 msgid "Find line movements within and across files"
 msgstr "Troba moviments de línia dins i a través dels fitxers"
 
-#: builtin/blame.c:2551
+#: builtin/praise.c:2551
 msgid "n,m"
 msgstr "n,m"
 
-#: builtin/blame.c:2551
+#: builtin/praise.c:2551
 msgid "Process only line range n,m, counting from 1"
 msgstr "Processa només el rang de línies n,m, comptant des d'1"
 
 #. TRANSLATORS: This string is used to tell us the maximum
-#. display width for a relative timestamp in "git blame"
+#. display width for a relative timestamp in "git praise"
 #. output.  For C locale, "4 years, 11 months ago", which
 #. takes 22 places, is the longest among various forms of
 #. relative timestamps, but your language may need more or
 #. fewer display columns.
-#: builtin/blame.c:2640
+#: builtin/praise.c:2640
 msgid "4 years, 11 months ago"
 msgstr "fa 4 anys i 11 mesos"
 

@@ -1,6 +1,6 @@
 #!/bin/sh
 
-test_description='blame output in various formats on a simple case'
+test_description='praise output in various formats on a simple case'
 . ./test-lib.sh
 
 test_expect_success 'setup' '
@@ -21,8 +21,8 @@ cat >expect <<'EOF'
 8825379d (A U Thor 2005-04-07 15:14:13 -0700 3) c
 8825379d (A U Thor 2005-04-07 15:14:13 -0700 4) d
 EOF
-test_expect_success 'normal blame output' '
-	git blame file >actual &&
+test_expect_success 'normal praise output' '
+	git praise file >actual &&
 	test_cmp expect actual
 '
 
@@ -63,8 +63,8 @@ $ID2 3 3
 $ID2 4 4
 	d
 EOF
-test_expect_success 'blame --porcelain output' '
-	git blame --porcelain file >actual &&
+test_expect_success 'praise --porcelain output' '
+	git praise --porcelain file >actual &&
 	test_cmp expect actual
 '
 
@@ -82,8 +82,8 @@ $ID2 4 4
 $COMMIT2
 	d
 EOF
-test_expect_success 'blame --line-porcelain output' '
-	git blame --line-porcelain file >actual &&
+test_expect_success 'praise --line-porcelain output' '
+	git praise --line-porcelain file >actual &&
 	test_cmp expect actual
 '
 

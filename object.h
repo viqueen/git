@@ -32,7 +32,7 @@ struct object_array {
  * fetch-pack.c:    0---4
  * walker.c:        0-2
  * upload-pack.c:               11----------------19
- * builtin/blame.c:               12-13
+ * builtin/praise.c:               12-13
  * bisect.c:                               16
  * bundle.c:                               16
  * http-push.c:                            16-----19
